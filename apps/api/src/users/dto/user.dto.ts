@@ -1,4 +1,3 @@
-import { Role } from '../../database/entities';
 import {
   IsEmail,
   IsString,
@@ -9,6 +8,7 @@ import {
   MaxLength,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { ProfileDto } from './profile.dto';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -84,6 +84,13 @@ export class UpdateUserDto {
   @IsArray()
   @IsOptional()
   roles?: string[];
+
+  @ApiProperty({
+    description: 'Updated profile information',
+    required: false,
+  })
+  @IsOptional()
+  profile?: ProfileDto;
 }
 
 export class UserResponseDto {
@@ -153,18 +160,12 @@ export class UserResponseDto {
     example: '2026-01-19T12:00:00Z',
   })
   updatedAt: Date;
-}
 
-export class UserDto {
-  id: string;
-  username: string;
-  email: string;
-  isVerified: boolean;
-  isActive: boolean;
-  roles: Role[];
-  avgRating: number;
-  reviews: number;
-  totalHelped: number;
-  createdAt: Date;
-  updatedAt: Date;
+  @ApiProperty({
+    description: 'Updated profile information',
+    required: false,
+    type: ProfileDto,
+  })
+  @IsOptional()
+  profile?: Partial<ProfileDto>;
 }

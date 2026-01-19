@@ -10,6 +10,8 @@ import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 import { User, Profile, Tenant, Role } from '../database/entities';
 import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto/user.dto';
+import { ProfileDto } from './dto/profile.dto';
+import { AddressDto } from './dto/address.dto';
 
 @Injectable()
 export class UsersService {
@@ -140,6 +142,20 @@ export class UsersService {
   }
 
   private mapUserToResponse(user: User): UserResponseDto {
+    const profile = new ProfileDto();
+    profile.firstName = user.profile?.firstName ?? '';
+    profile.lastName = user.profile?.lastName ?? '';
+    profile.bio = user.profile?.bio;
+    profile.avatarUrl = user.profile?.avatarUrl;
+    profile.phone = user.profile?.phone ?? '';
+    profile.address = new AddressDto();
+    profile.address.street = user.profile?.address?.street ?? '';
+    profile.address.city = user.profile?.address?.city ?? '';
+    profile.address.state = user.profile?.address?.state ?? '';
+    profile.address.zipCode = user.profile?.address?.zipCode ?? '';
+    profile.address.country = user.profile?.address?.country ?? '';
+    profile.address.latitude = user.profile?.address?.latitude;
+    profile.address.longitude = user.profile?.address?.longitude;
     return {
       id: user.id,
       username: user.username,
@@ -152,6 +168,7 @@ export class UsersService {
       totalHelped: user.totalHelped,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
+      profile,
     };
   }
 
