@@ -1,6 +1,5 @@
 export { User, Role } from './user.entity';
 export { Profile } from './profile.entity';
-export { Address } from './address.entity';
 export { Request, RequestStatus, RequestMode } from './request.entity';
 export { RequestLocation } from './request-location.entity';
 export { Category } from './category.entity';
@@ -9,5 +8,4 @@ export { Chat } from './chat.entity';
 export { Message } from './message.entity';
 export { Payment, PaymentStatus } from './payment.entity';
 export { Rating } from './rating.entity';
-export { Language } from './language.entity';
 export { Tenant } from './tenant.entity';

@@ -5,33 +5,41 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToOne,
-  ManyToMany,
-  JoinTable,
-  OneToMany,
+  // ManyToOne,
+  JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
-import { Address } from './address.entity';
-import { Language } from './language.entity';
+import { AddressDto } from 'src/users/dto/address.dto';
 
+enum Proficiency {
+  BASIC = 'BASIC',
+  CONVERSATIONAL = 'CONVERSATIONAL',
+  FLUENT = 'FLUENT',
+  NATIVE = 'NATIVE',
+}
+export class Language {
+  name: string;
+  proficiency: Proficiency;
+}
 @Entity('profiles')
 export class Profile {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'text' })
-  bio: string;
+  @Column({ type: 'text', nullable: true })
+  bio?: string;
 
-  @Column({ length: 100 })
-  firstName: string;
+  @Column({ length: 100, nullable: true })
+  firstName?: string;
 
-  @Column({ length: 100 })
-  lastName: string;
+  @Column({ length: 100, nullable: true })
+  lastName?: string;
 
-  @Column({ length: 20 })
-  phone: string;
+  @Column({ length: 20, nullable: true })
+  phone?: string;
 
   @Column({ type: 'text', nullable: true })
-  avatarUrl: string;
+  avatarUrl?: string;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -39,25 +47,12 @@ export class Profile {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToOne(() => User, (user) => user.profile)
+  @Column({ type: 'json', nullable: true })
+  languages: Language[];
+
+  @OneToOne(() => User, (user) => user.profile, { onDelete: 'CASCADE' })
+  @JoinColumn()
   user: User;
 
-  @Column({ unique: true })
-  userId: string;
-
-  @OneToMany(() => Address, (address) => address.profile, {
-    cascade: true,
-    nullable: true,
-    onDelete: 'CASCADE',
-    eager: true,
-  })
-  address: Address;
-
-  @ManyToMany(() => Language, (language) => language.profiles, { eager: true })
-  @JoinTable({
-    name: 'profile_languages',
-    joinColumn: { name: 'profileId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'languageId', referencedColumnName: 'id' },
-  })
-  languages: Language[];
+  address: AddressDto | null;
 }

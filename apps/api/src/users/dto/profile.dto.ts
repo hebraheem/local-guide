@@ -7,6 +7,7 @@ import {
   MinLength,
 } from 'class-validator';
 import { AddressDto } from './address.dto';
+import { Language } from 'src/database/entities/profile.entity';
 
 export class ProfileDto {
   @ApiProperty({
@@ -66,12 +67,16 @@ export class ProfileDto {
 
   @ApiProperty({
     description: 'Languages spoken by the user',
-    example: ['English', 'Spanish'],
+    example: [
+      { name: 'English', proficiency: 'NATIVE' },
+      { name: 'Spanish', proficiency: 'FLUENT' },
+    ],
     required: false,
+    type: Language,
   })
   @IsString({ each: true })
   @IsOptional()
-  languages: string[];
+  languages: Language[];
 
   @ApiProperty({
     description: 'Address of the user',

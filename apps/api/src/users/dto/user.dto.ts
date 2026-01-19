@@ -90,7 +90,7 @@ export class UpdateUserDto {
     required: false,
   })
   @IsOptional()
-  profile?: ProfileDto;
+  profile?: Partial<ProfileDto>;
 }
 
 export class UserResponseDto {

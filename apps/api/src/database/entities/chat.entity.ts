@@ -9,7 +9,6 @@ import {
 } from 'typeorm';
 import { Request } from './request.entity';
 import { Message } from './message.entity';
-import { Location } from './location.entity';
 
 @Entity('chats')
 export class Chat {

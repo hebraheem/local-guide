@@ -2,7 +2,7 @@ import { DataSource } from 'typeorm';
 import {
   User,
   Profile,
-  Address,
+  // Address,
   Request,
   RequestLocation,
   Category,
@@ -11,7 +11,6 @@ import {
   Message,
   Payment,
   Rating,
-  Language,
   Tenant,
 } from './src/database/entities';
 
@@ -27,7 +26,7 @@ export const AppDataSource = new DataSource({
   entities: [
     User,
     Profile,
-    Address,
+    // Address,
     Request,
     RequestLocation,
     Category,
@@ -36,7 +35,6 @@ export const AppDataSource = new DataSource({
     Message,
     Payment,
     Rating,
-    Language,
     Tenant,
   ],
   migrations: [__dirname + '/src/database/migrations/**/*{.ts,.js}'],

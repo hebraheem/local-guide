@@ -47,6 +47,7 @@ export class UsersService {
       password: hashedPassword,
       roles: (roles as Role[]) || [Role.REQUESTER],
       tenant,
+      profile: {},
       tenantId: tenant.id,
     });
 
@@ -119,6 +120,47 @@ export class UsersService {
     if (updateUserDto.roles) {
       user.roles = updateUserDto.roles as Role[];
     }
+    if (updateUserDto.profile) {
+      let profile = await this.profileRepository.findOne({
+        where: { id: user.profile?.id },
+      });
+
+      if (!profile) {
+        profile = this.profileRepository.create();
+      }
+      profile.firstName = updateUserDto.profile.firstName ?? profile.firstName;
+      profile.lastName = updateUserDto.profile.lastName ?? profile.lastName;
+      profile.bio = updateUserDto.profile.bio ?? profile.bio;
+      profile.avatarUrl = updateUserDto.profile.avatarUrl ?? profile.avatarUrl;
+      profile.phone = updateUserDto.profile.phone ?? profile.phone;
+      profile.languages = updateUserDto.profile.languages ?? profile.languages;
+      profile.avatarUrl = updateUserDto.profile.avatarUrl ?? profile.avatarUrl;
+      profile.user = user;
+
+      if (updateUserDto.profile.address) {
+        if (!profile.address) {
+          profile.address = {} as AddressDto;
+        }
+        profile.address.street =
+          updateUserDto.profile.address.street ?? profile.address.street;
+        profile.address.city =
+          updateUserDto.profile.address.city ?? profile.address.city;
+        profile.address.state =
+          updateUserDto.profile.address.state ?? profile.address.state;
+        profile.address.zipCode =
+          updateUserDto.profile.address.zipCode ?? profile.address.zipCode;
+        profile.address.country =
+          updateUserDto.profile.address.country ?? profile.address.country;
+        profile.address.latitude =
+          updateUserDto.profile.address.latitude ?? profile.address.latitude;
+        profile.address.longitude =
+          updateUserDto.profile.address.longitude ?? profile.address.longitude;
+        profile.address.number =
+          updateUserDto.profile.address.number ?? profile.address.number;
+      }
+      const savedProfile = await this.profileRepository.save(profile);
+      user.profile = savedProfile;
+    }
 
     const updatedUser = await this.userRepository.save(user);
     this.logger.log(`User updated: ${id}`);
@@ -148,6 +190,7 @@ export class UsersService {
     profile.bio = user.profile?.bio;
     profile.avatarUrl = user.profile?.avatarUrl;
     profile.phone = user.profile?.phone ?? '';
+    profile.languages = user.profile?.languages ?? [];
     profile.address = new AddressDto();
     profile.address.street = user.profile?.address?.street ?? '';
     profile.address.city = user.profile?.address?.city ?? '';
@@ -156,6 +199,7 @@ export class UsersService {
     profile.address.country = user.profile?.address?.country ?? '';
     profile.address.latitude = user.profile?.address?.latitude;
     profile.address.longitude = user.profile?.address?.longitude;
+    profile.address.number = user.profile?.address?.number ?? '';
     return {
       id: user.id,
       username: user.username,

@@ -72,6 +72,36 @@ export class UsersController {
     return this.usersService.findById(id);
   }
 
+  @Patch('me')
+  @ApiOperation({
+    summary: 'Update own user profile',
+    description: 'Update the profile of the currently authenticated user.',
+  })
+  @ApiBody({
+    type: UpdateUserDto,
+    description: 'User update data',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'User profile updated successfully',
+    type: UserResponseDto,
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Bad request - Invalid input',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  async updateSelf(
+    @Body() updateUserDto: UpdateUserDto,
+    @CurrentUser('sub') userId: JwtPayload['sub'],
+  ): Promise<UserResponseDto> {
+    console.log('userId', userId);
+    return this.usersService.update(userId, updateUserDto);
+  }
+
   @Patch(':id')
   @ApiOperation({
     summary: 'Update user',
@@ -108,35 +138,6 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<UserResponseDto> {
     return this.usersService.update(id, updateUserDto);
-  }
-
-  @Patch('me')
-  @ApiOperation({
-    summary: 'Update own user profile',
-    description: 'Update the profile of the currently authenticated user.',
-  })
-  @ApiBody({
-    type: UpdateUserDto,
-    description: 'User update data',
-  })
-  @ApiResponse({
-    status: 200,
-    description: 'User profile updated successfully',
-    type: UserResponseDto,
-  })
-  @ApiResponse({
-    status: 400,
-    description: 'Bad request - Invalid input',
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized',
-  })
-  async updateSelf(
-    @Body() updateUserDto: UpdateUserDto,
-    @CurrentUser() userId: JwtPayload['sub'],
-  ): Promise<UserResponseDto> {
-    return this.usersService.update(userId, updateUserDto);
   }
 
   @Delete(':id')

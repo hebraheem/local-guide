@@ -52,7 +52,6 @@ export class AuthService {
       requestsCreated: [],
       requestsAccepted: [],
       ratings: [],
-      messages: [],
       location: {},
       tenantId: tenant.id,
     });

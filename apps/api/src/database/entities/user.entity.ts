@@ -14,7 +14,6 @@ import { Request } from './request.entity';
 import { Rating } from './rating.entity';
 import { Location } from './location.entity';
 import { Tenant } from './tenant.entity';
-import { Message } from './message.entity';
 
 export enum Role {
   HELPER = 'HELPER',
@@ -67,10 +66,8 @@ export class User {
 
   @OneToOne(() => Profile, (profile) => profile.user, {
     cascade: true,
-    onDelete: 'CASCADE',
     eager: true,
   })
-  @JoinColumn()
   profile?: Profile;
 
   @OneToMany(() => Request, (request) => request.requestBy)
@@ -81,9 +78,6 @@ export class User {
 
   @OneToMany(() => Rating, (rating) => rating.user)
   ratings?: Rating[];
-
-  @OneToMany(() => Message, (message) => message.sender)
-  messages?: Message[];
 
   @ManyToOne(() => Location, (location) => location.users, {
     nullable: true,
