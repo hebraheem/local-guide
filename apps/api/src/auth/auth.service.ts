@@ -28,7 +28,9 @@ export class AuthService {
 
   async register(registerDto: RegisterAuthDto): Promise<TokenResponse> {
     const { username, email, password } = registerDto;
-
+    if (!registerDto.roles || registerDto.roles.length === 0) {
+      registerDto.roles = [Role.REQUESTER];
+    }
     const existingUser = await this.userRepository.findOne({
       where: [{ username }, { email }],
     });
@@ -44,8 +46,14 @@ export class AuthService {
       username,
       email,
       password: hashedPassword,
-      roles: [Role.REQUESTER],
+      roles: registerDto.roles as Role[],
       tenant,
+      profile: {},
+      requestsCreated: [],
+      requestsAccepted: [],
+      ratings: [],
+      messages: [],
+      location: {},
       tenantId: tenant.id,
     });
 
@@ -54,10 +62,10 @@ export class AuthService {
   }
 
   async login(loginDto: LoginAuthDto): Promise<TokenResponse> {
-    const { username, password } = loginDto;
+    const { username, password, email } = loginDto;
 
     const user = await this.userRepository.findOne({
-      where: { username },
+      where: [{ username }, { email }],
     });
 
     if (!user) {

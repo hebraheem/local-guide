@@ -4,7 +4,7 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
+  OneToMany,
 } from 'typeorm';
 import { User } from './user.entity';
 
@@ -25,6 +25,6 @@ export class Location {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => User, (user) => user.location)
+  @OneToMany(() => User, (user) => user.location)
   users: User[];
 }

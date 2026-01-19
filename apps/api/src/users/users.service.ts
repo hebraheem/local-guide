@@ -9,12 +9,7 @@ import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 import { User, Profile, Tenant, Role } from '../database/entities';
-import {
-  CreateUserDto,
-  UpdateUserDto,
-  UserResponseDto,
-  UserProfileDto,
-} from './dto/user.dto';
+import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -135,38 +130,6 @@ export class UsersService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
     this.logger.log(`User deleted: ${id}`);
-  }
-
-  async updateProfile(
-    id: string,
-    profileDto: UserProfileDto,
-  ): Promise<UserResponseDto> {
-    const user = await this.userRepository.findOne({
-      where: { id },
-      relations: ['profile'],
-    });
-
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-
-    const profileData = {
-      userId: id,
-      bio: profileDto.bio || '',
-      firstName: profileDto.firstName || '',
-      lastName: profileDto.lastName || '',
-      phone: profileDto.phone || '',
-      avatarUrl: profileDto.avatarUrl,
-    };
-
-    if (user.profile) {
-      await this.profileRepository.update({ userId: id }, profileData);
-    } else {
-      await this.profileRepository.save(profileData);
-    }
-
-    this.logger.log(`Profile updated for user: ${id}`);
-    return this.findById(id);
   }
 
   private async hashPassword(password: string): Promise<string> {

@@ -7,6 +7,7 @@ import {
   OneToOne,
   OneToMany,
   JoinColumn,
+  ManyToOne,
 } from 'typeorm';
 import { Profile } from './profile.entity';
 import { Request } from './request.entity';
@@ -69,31 +70,30 @@ export class User {
     onDelete: 'CASCADE',
     eager: true,
   })
+  @JoinColumn()
   profile?: Profile;
 
   @OneToMany(() => Request, (request) => request.requestBy)
-  requestsCreated: Request[];
+  requestsCreated?: Request[];
 
   @OneToMany(() => Request, (request) => request.acceptedBy)
-  requestsAccepted: Request[];
+  requestsAccepted?: Request[];
 
   @OneToMany(() => Rating, (rating) => rating.user)
-  ratings: Rating[];
+  ratings?: Rating[];
 
   @OneToMany(() => Message, (message) => message.sender)
-  messages: Message[];
+  messages?: Message[];
 
-  @OneToMany(() => Location, (location) => location.users, {
+  @ManyToOne(() => Location, (location) => location.users, {
     nullable: true,
     onDelete: 'SET NULL',
     eager: true,
   })
   @JoinColumn()
-  location: Location;
+  location?: Location;
 
-  @OneToMany(() => Tenant, (tenant) => tenant.users, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => Tenant, (tenant) => tenant.users)
   @JoinColumn()
   tenant: Tenant;
 
