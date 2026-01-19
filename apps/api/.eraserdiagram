@@ -1,0 +1,171 @@
+entity-relationship-diagram
+
+// title
+title Multi-Tenant Request & Help Platform Data Model
+
+// tables
+User [icon: user, color: yellow] {
+  id string pk
+  username string unique
+  password string
+  email string unique
+  isVerified boolean
+  isActive boolean
+  roles string[] // Enum: HELPER, REQUESTER
+  lastLogin datetime
+  avgRating float
+  reviews int
+  totalHelped int
+  tenantId string unique
+  createdAt datetime
+  updatedAt datetime
+  locationId string
+}
+
+Profile [icon: user-check, color: orange] {
+  id string pk
+  bio string
+  firstName string
+  lastName string
+  phone string
+  avatarUrl string
+  addressId string unique
+  createdAt datetime
+  updatedAt datetime
+  userId string unique
+}
+
+Request [icon: help-circle, color: blue] {
+  id string pk
+  title string
+  description string
+  categoryId string
+  status string // Enum: CREATED, PENDING, ACCEPTED, IN_PROGRESS, COMPLETED, CANCELLED
+  mode string // Enum: FREE, PAID
+  locationId string
+  requestById string
+  acceptedById string
+  createdAt datetime
+  updatedAt datetime
+}
+
+Chat [icon: message-square, color: green] {
+  id string pk
+  createdAt datetime
+  requestId string
+}
+
+Message [icon: mail, color: purple] {
+  id string pk
+  text string
+  attachmentUrl string
+  sentAt datetime
+  chatId string
+  senderId string
+}
+
+Payment [icon: credit-card, color: teal] {
+  id string pk
+  amount float
+  currency string
+  status string // Enum: OFFLINE, PENDING, COMPLETED, FAILED
+  createdAt datetime
+  updatedAt datetime
+  requestId string unique
+}
+
+Tenant [icon: building, color: red] {
+  id string pk
+  name string unique
+  state string
+  createdAt datetime
+  updatedAt datetime
+}
+
+Rating [icon: star, color: gold] {
+  id string pk
+  score int
+  comment string
+  createdAt datetime
+  updatedAt datetime
+  userId string unique
+}
+
+Language [icon: globe, color: lightblue] {
+  id string pk
+  name string unique
+  createdAt datetime
+  updatedAt datetime
+}
+
+Category [icon: tag, color: pink] {
+  id string pk
+  name string unique
+}
+
+Address [icon: map-pin, color: brown] {
+  id string pk
+  street string
+  city string
+  state string
+  country string
+  zipCode string
+  latitude float
+  longitude float
+  number string
+  profileId string unique
+}
+
+Location [icon: map, color: cyan] {
+  id string pk
+  latitude float
+  longitude float
+}
+
+RequestLocation [icon: map, color: cyan] {
+  id string pk
+  latitude float
+  longitude float
+  city string
+  street string
+  state string
+  country string
+  zipCode string
+}
+
+// relationships
+User.tenantId > Tenant.id
+User.locationId > Location.id
+User.profile - Profile.userId
+User.id > Rating.userId
+User.id > Request.requestById
+User.id > Request.acceptedById
+User.id > Message.senderId
+
+Profile.userId > User.id
+Profile.addressId > Address.id
+
+Profile.id <> Language.id // Many-to-many, via join table not shown
+
+Request.categoryId > Category.id
+Request.locationId > RequestLocation.id
+Request.requestById > User.id
+Request.acceptedById > User.id
+Request.id <> Chat.requestId
+Request.id - Payment.requestId
+
+Chat.requestId > Request.id
+Chat.id <> Message.chatId
+
+Message.chatId > Chat.id
+Message.senderId > User.id
+
+Payment.requestId > Request.id
+
+Rating.userId > User.id
+
+Address.profileId > Profile.id
+
+Location.id <> User.locationId
+
+RequestLocation.id <> Request.locationId

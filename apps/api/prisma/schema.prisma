@@ -1,0 +1,216 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgres"
+}
+
+model User {
+  id String @id @default(uuid()) @db.Uuid
+
+  username   String   @unique
+  password   String   @db.Text
+  email      String   @unique
+  isVerified Boolean  @default(false)
+  isActive   Boolean  @default(true)
+  roles      Role[]   @default([REQUESTER])
+  lastLogin  DateTime @default(now())
+
+  ratings Rating[]
+
+  avgRating   Float  @default(0.0)
+  reviews     Int    @default(0)
+  totalHelped Int    @default(0)
+  tenantId    String @unique @db.Uuid
+
+  profile  Profile?
+  location Location? @relation(fields: [locationId], references: [id])
+  tenant   Tenant    @relation(fields: [tenantId], references: [id])
+
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  locationId String?   @unique @db.Uuid
+  messages   Message[] @ignore
+
+  requestsCreated  Request[] @relation("RequestByUser")
+  requestsAccepted Request[] @relation("AcceptedByUser")
+}
+
+model Profile {
+  id String @id @default(uuid()) @db.Uuid
+
+  bio       String  @db.Text
+  firstName String  @db.VarChar(100)
+  lastName  String  @db.VarChar(100)
+  phone     String  @db.VarChar(20)
+  avatarUrl String? @db.Text
+
+  addressId String? @unique @db.Uuid
+
+  languages Language[]
+  address   Address?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User?  @relation(fields: [userId], references: [id])
+  userId String @unique @db.Uuid
+}
+
+model Request {
+  id String @id @default(uuid()) @db.Uuid
+
+  title       String        @db.VarChar(200)
+  description String        @db.Text
+  categoryId  String        @db.Uuid
+  status      RequestStatus @default(CREATED)
+  mode        RequestMode   @default(FREE)
+  payment     Payment?
+
+  locationId   String  @db.Uuid
+  requestById  String  @db.Uuid
+  acceptedById String? @db.Uuid
+
+  chats      Chat[]
+  location   RequestLocation @relation(fields: [locationId], references: [id])
+  requestBy  User            @relation("RequestByUser", fields: [requestById], references: [id])
+  acceptedBy User?           @relation("AcceptedByUser", fields: [acceptedById], references: [id])
+  category   Category        @relation(fields: [categoryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Chat {
+  id        String   @id @default(uuid()) @db.Uuid
+  createdAt DateTime @default(now())
+  requestId String   @db.Uuid
+
+  messages Message[]
+  request  Request   @relation(fields: [requestId], references: [id])
+}
+
+model Message {
+  id            String   @id @default(uuid()) @db.Uuid
+  text          String   @db.Text
+  attachmentUrl String?  @db.Text
+  sentAt        DateTime @default(now())
+
+  chatId   String @db.Uuid
+  senderId String @db.Uuid
+
+  sender User @relation(fields: [senderId], references: [id])
+  chat   Chat @relation(fields: [chatId], references: [id])
+}
+
+model Payment {
+  id        String        @id @default(uuid()) @db.Uuid
+  amount    Float
+  currency  String        @db.VarChar(10)
+  status    PaymentStatus @default(OFFLINE)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  requestId String        @unique @db.Uuid
+  request   Request       @relation(fields: [requestId], references: [id])
+}
+
+model Tenant {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @unique @db.VarChar(100)
+  state     String   @db.VarChar(100)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  users     User[]
+}
+
+model Rating {
+  id        String   @id @default(uuid()) @db.Uuid
+  score     Int
+  comment   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  userId String? @unique @db.Uuid
+  user   User?   @relation(fields: [userId], references: [id])
+}
+
+model Language {
+  id        String    @id @default(uuid()) @db.Uuid
+  name      String    @unique
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  profiles  Profile[] @ignore
+}
+
+model Category {
+  id       String    @id @default(uuid()) @db.Uuid
+  name     String    @unique @db.VarChar(100)
+  requests Request[]
+}
+
+model Address {
+  id        String   @id @default(uuid()) @db.Uuid
+  street    String
+  city      String
+  state     String
+  country   String
+  zipCode   String
+  latitude  Float
+  longitude Float
+  number    String
+  profile   Profile? @relation(fields: [profileId], references: [id])
+  profileId String?  @unique @db.Uuid
+}
+
+model Location {
+  id        String @id @default(uuid()) @db.Uuid
+  latitude  Float
+  longitude Float
+  users     User[]
+}
+
+model RequestLocation {
+  id        String    @id @default(uuid()) @db.Uuid
+  latitude  Float?
+  longitude Float?
+  city      String    @db.Text
+  street    String    @db.Text
+  state     String    @db.Text
+  country   String    @db.Text
+  zipCode   String    @db.Text
+  requests  Request[]
+}
+
+enum RequestStatus {
+  CREATED
+  PENDING
+  ACCEPTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum Role {
+  HELPER
+  REQUESTER
+}
+
+enum RequestMode {
+  FREE
+  PAID
+}
+
+enum PaymentStatus {
+  OFFLINE
+  PENDING
+  COMPLETED
+  FAILED
+}
