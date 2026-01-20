@@ -311,7 +311,7 @@ NODE_ENV=development
 PORT=3001
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/app_db?schema=public
 JWT_SECRET=dev_secret_key_change_this_in_production_must_be_32_chars_min
-JWT_EXPIRATION=7d
+JWT_EXPIRATION=1h
 BCRYPT_ROUNDS=10
 ```
 
@@ -322,7 +322,7 @@ NODE_ENV=production
 PORT=3000
 DATABASE_URL=postgresql://user:pass@prod-db:5432/app_db
 JWT_SECRET=<generate-secure-random-32+-chars>
-JWT_EXPIRATION=7d
+JWT_EXPIRATION=1h
 BCRYPT_ROUNDS=12
 CORS_ORIGIN=https://yourdomain.com
 LOG_LEVEL=info

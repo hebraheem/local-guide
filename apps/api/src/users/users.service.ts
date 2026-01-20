@@ -229,6 +229,7 @@ export class UsersService {
       totalHelped: user.totalHelped,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
+      deletedAt: user.deletedAt,
       profile,
     };
   }

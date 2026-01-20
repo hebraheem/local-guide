@@ -49,11 +49,6 @@ export const databaseConfig = registerAs('database', () => ({
   name: process.env.DATABASE_NAME,
 }));
 
-export const jwtConfig = registerAs('jwt', () => ({
-  secret: process.env.JWT_SECRET,
-  expiresIn: process.env.JWT_EXPIRATION,
-}));
-
 export const authConfig = registerAs('auth', () => ({
   bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || '10', 10),
   jwtSecret: process.env.JWT_SECRET,

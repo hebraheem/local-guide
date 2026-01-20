@@ -8,6 +8,7 @@ import {
   OneToMany,
   JoinColumn,
   ManyToOne,
+  DeleteDateColumn,
 } from 'typeorm';
 import { Profile } from './profile.entity';
 import { Request } from './request.entity';
@@ -93,4 +94,7 @@ export class User {
 
   @Column({ unique: true })
   tenantId: string;
+
+  @DeleteDateColumn({ nullable: true })
+  deletedAt?: Date;
 }

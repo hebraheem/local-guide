@@ -107,7 +107,7 @@ export class AuthController {
     @Body('refreshToken') refreshTokenDto: RefreshTokenDto,
   ): Promise<TokenResponse> {
     const token = await Promise.resolve(refreshTokenDto.refreshToken);
-    console.log('userId', userId);
+
     return {
       accessToken: token,
     } as TokenResponse;

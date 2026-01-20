@@ -4,7 +4,6 @@ import {
   appConfig,
   authConfig,
   databaseConfig,
-  jwtConfig,
   validationSchema,
 } from './config';
 
@@ -16,7 +15,7 @@ import {
       isGlobal: true,
       cache: true,
       expandVariables: true,
-      load: [appConfig, databaseConfig, jwtConfig, authConfig],
+      load: [appConfig, databaseConfig, authConfig],
     }),
   ],
   providers: [ConfigService],

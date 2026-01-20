@@ -1,8 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Role } from 'src/database/entities';
 
 export interface JwtPayload {
   sub: string;
   username: string;
+  roles: Role[];
   iat?: number;
   exp?: number;
 }
@@ -16,7 +18,7 @@ export class TokenResponse {
 
   @ApiProperty({
     description: 'Token expiration time',
-    example: '7d',
+    example: '3600',
     required: false,
   })
   expiresIn?: string;

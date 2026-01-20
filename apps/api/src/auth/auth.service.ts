@@ -57,7 +57,7 @@ export class AuthService {
     });
 
     this.logger.log(`User registered: ${user.id}`);
-    return this.generateTokens(user.id, user.username);
+    return this.generateTokens(user.id, user.username, user.roles);
   }
 
   async login(loginDto: LoginAuthDto): Promise<TokenResponse> {
@@ -84,7 +84,7 @@ export class AuthService {
     await this.userRepository.save(user);
 
     this.logger.log(`User logged in: ${user.id}`);
-    return this.generateTokens(user.id, user.username);
+    return this.generateTokens(user.id, user.username, user.roles);
   }
 
   private async hashPassword(password: string): Promise<string> {
@@ -102,9 +102,17 @@ export class AuthService {
     return bcrypt.compare(password, hashedPassword);
   }
 
-  private generateTokens(userId: string, username: string): TokenResponse {
-    const payload: JwtPayload = { sub: userId, username };
-    const accessToken = this.jwtService.sign(payload);
+  private generateTokens(
+    userId: string,
+    username: string,
+    role: Role[],
+  ): TokenResponse {
+    const payload: JwtPayload = { sub: userId, username, roles: role };
+
+    const accessToken = this.jwtService.sign(payload, {
+      secret: this.configService.get('auth.jwtSecret'),
+      expiresIn: this.configService.get('auth.jwtExpiresIn'),
+    });
     const refreshToken = this.jwtService.sign(payload, {
       secret: this.configService.get('auth.jwtRefreshSecret'),
       expiresIn: this.configService.get('auth.jwtRefreshExpiresIn'),

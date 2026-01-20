@@ -10,6 +10,7 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { ProfileDto } from './profile.dto';
+import { Role } from 'src/database/entities';
 
 export class CreateUserDto {
   @ApiProperty({
@@ -131,7 +132,7 @@ export class UserResponseDto {
     example: ['REQUESTER'],
     isArray: true,
   })
-  roles: string[];
+  roles: Role[];
 
   @ApiProperty({
     description: 'Average rating',
@@ -170,6 +171,13 @@ export class UserResponseDto {
   })
   @IsOptional()
   profile?: Partial<ProfileDto>;
+
+  @ApiProperty({
+    description: 'Account deletion date (if applicable)',
+    example: '2026-02-01T00:00:00Z',
+  })
+  @IsOptional()
+  deletedAt?: Date;
 }
 
 export class SearchAndFilterDto {

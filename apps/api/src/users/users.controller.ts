@@ -150,7 +150,6 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
     @CurrentUser('sub') userId: JwtPayload['sub'],
   ): Promise<ResponseDto<UserResponseDto>> {
-    console.log('userId', userId);
     return {
       success: true,
       message: 'User profile updated successfully',
