@@ -6,6 +6,7 @@ import {
   IsArray,
   MinLength,
   MaxLength,
+  IsBoolean,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { ProfileDto } from './profile.dto';
@@ -88,6 +89,7 @@ export class UpdateUserDto {
   @ApiProperty({
     description: 'Updated profile information',
     required: false,
+    type: ProfileDto,
   })
   @IsOptional()
   profile?: Partial<ProfileDto>;
@@ -168,4 +170,18 @@ export class UserResponseDto {
   })
   @IsOptional()
   profile?: Partial<ProfileDto>;
+}
+
+export class SearchAndFilterDto {
+  @IsString()
+  @IsOptional()
+  search?: string;
+
+  @IsString()
+  @IsOptional()
+  role?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isVerified?: boolean;
 }

@@ -5,11 +5,16 @@ import {
   Logger,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 import { User, Profile, Tenant, Role } from '../database/entities';
-import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto/user.dto';
+import {
+  CreateUserDto,
+  SearchAndFilterDto,
+  UpdateUserDto,
+  UserResponseDto,
+} from './dto/user.dto';
 import { ProfileDto } from './dto/profile.dto';
 import { AddressDto } from './dto/address.dto';
 import {
@@ -61,12 +66,39 @@ export class UsersService {
   }
 
   async findAll(
-    query: ListRequestDto,
+    query: ListRequestDto & SearchAndFilterDto,
   ): Promise<ListResponseDto<UserResponseDto>> {
+    const { search } = query;
+    const where = search
+      ? [
+          { username: ILike(`%${search}%`) },
+          { email: ILike(`%${search}%`) },
+          { profile: { firstName: ILike(`%${search}%`) } },
+          { profile: { lastName: ILike(`%${search}%`) } },
+        ]
+      : {};
+    if (query.role) {
+      if (Array.isArray(where)) {
+        where.forEach((condition) => {
+          condition['roles'] = ILike(`%${query.role}%`);
+        });
+      } else {
+        where['roles'] = ILike(`%${query.role}%`);
+      }
+    }
+    if (typeof query.isVerified === 'boolean') {
+      if (Array.isArray(where)) {
+        where.forEach((condition) => {
+          condition['isVerified'] = query.isVerified;
+        });
+      } else {
+        where['isVerified'] = query.isVerified;
+      }
+    }
     const paginateQuery = new PaginateQuery<User, UserResponseDto>(
       this.userRepository,
       query,
-      {},
+      where,
       this.mapUserToResponse.bind(this) as (entity: User) => UserResponseDto,
     );
 
@@ -77,19 +109,6 @@ export class UsersService {
     const user = await this.userRepository.findOne({
       where: { id },
       relations: ['profile'],
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        isVerified: true,
-        isActive: true,
-        roles: true,
-        avgRating: true,
-        reviews: true,
-        totalHelped: true,
-        createdAt: true,
-        updatedAt: true,
-      },
     });
 
     if (!user) {

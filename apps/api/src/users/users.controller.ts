@@ -19,13 +19,18 @@ import {
   ApiQuery,
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
-import { UpdateUserDto, UserResponseDto } from './dto/user.dto';
+import {
+  SearchAndFilterDto,
+  UpdateUserDto,
+  UserResponseDto,
+} from './dto/user.dto';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { JwtPayload } from 'src/auth/interfaces/jwt-payload.interface';
 import {
   ListRequestDto,
   ListResponseDto,
 } from 'src/common/classes/pagination/pagination.dto';
+import { ResponseDto } from 'src/common/classes/success.response';
 
 @ApiTags('Users')
 @ApiBearerAuth('bearer')
@@ -59,8 +64,29 @@ export class UsersController {
     description: 'Number of records per page for pagination',
     example: 10,
   })
+  @ApiQuery({
+    name: 'search',
+    required: false,
+    description: 'Search term to filter users',
+    example: 'john',
+  })
+  @ApiQuery({
+    name: 'role',
+    required: false,
+    type: 'enum',
+    enum: ['HELPER', 'REQUESTER'],
+    description: 'Filter users by role (HELPER or REQUESTER)',
+    example: 'HELPER',
+  })
+  @ApiQuery({
+    name: 'isVerified',
+    required: false,
+    type: Boolean,
+    description: 'Filter users by verified status (true or false)',
+    example: true,
+  })
   async findAll(
-    @Query() query: ListRequestDto,
+    @Query() query: ListRequestDto & SearchAndFilterDto,
   ): Promise<ListResponseDto<UserResponseDto>> {
     return this.usersService.findAll(query);
   }
@@ -88,8 +114,14 @@ export class UsersController {
     status: 401,
     description: 'Unauthorized',
   })
-  async findOne(@Param('id') id: string): Promise<UserResponseDto> {
-    return this.usersService.findById(id);
+  async findOne(
+    @Param('id') id: string,
+  ): Promise<ResponseDto<UserResponseDto>> {
+    return {
+      success: true,
+      message: 'User found',
+      data: await this.usersService.findById(id),
+    };
   }
 
   @Patch('me')
@@ -117,9 +149,13 @@ export class UsersController {
   async updateSelf(
     @Body() updateUserDto: UpdateUserDto,
     @CurrentUser('sub') userId: JwtPayload['sub'],
-  ): Promise<UserResponseDto> {
+  ): Promise<ResponseDto<UserResponseDto>> {
     console.log('userId', userId);
-    return this.usersService.update(userId, updateUserDto);
+    return {
+      success: true,
+      message: 'User profile updated successfully',
+      data: await this.usersService.update(userId, updateUserDto),
+    };
   }
 
   @Patch(':id')
@@ -156,8 +192,12 @@ export class UsersController {
   async update(
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
-  ): Promise<UserResponseDto> {
-    return this.usersService.update(id, updateUserDto);
+  ): Promise<ResponseDto<UserResponseDto>> {
+    return {
+      success: true,
+      message: 'User updated successfully',
+      data: await this.usersService.update(id, updateUserDto),
+    };
   }
 
   @Delete(':id')
@@ -183,7 +223,12 @@ export class UsersController {
     status: 401,
     description: 'Unauthorized',
   })
-  async remove(@Param('id') id: string): Promise<void> {
-    return this.usersService.delete(id);
+  async remove(@Param('id') id: string): Promise<ResponseDto<null>> {
+    await this.usersService.delete(id);
+    return {
+      success: true,
+      message: 'User deleted successfully',
+      data: null,
+    };
   }
 }
