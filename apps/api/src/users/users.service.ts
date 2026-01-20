@@ -12,6 +12,11 @@ import { User, Profile, Tenant, Role } from '../database/entities';
 import { CreateUserDto, UpdateUserDto, UserResponseDto } from './dto/user.dto';
 import { ProfileDto } from './dto/profile.dto';
 import { AddressDto } from './dto/address.dto';
+import {
+  ListRequestDto,
+  ListResponseDto,
+} from 'src/common/classes/pagination/pagination.dto';
+import { PaginateQuery } from 'src/common/classes/pagination/paginate.class';
 
 @Injectable()
 export class UsersService {
@@ -55,24 +60,17 @@ export class UsersService {
     return this.mapUserToResponse(user);
   }
 
-  async findAll(): Promise<UserResponseDto[]> {
-    const users = await this.userRepository.find({
-      select: {
-        id: true,
-        username: true,
-        email: true,
-        isVerified: true,
-        isActive: true,
-        roles: true,
-        avgRating: true,
-        reviews: true,
-        totalHelped: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+  async findAll(
+    query: ListRequestDto,
+  ): Promise<ListResponseDto<UserResponseDto>> {
+    const paginateQuery = new PaginateQuery<User, UserResponseDto>(
+      this.userRepository,
+      query,
+      {},
+      this.mapUserToResponse.bind(this) as (entity: User) => UserResponseDto,
+    );
 
-    return users.map((user) => this.mapUserToResponse(user));
+    return paginateQuery.paginate();
   }
 
   async findById(id: string): Promise<UserResponseDto> {

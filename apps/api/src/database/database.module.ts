@@ -5,7 +5,6 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import {
   User,
   Profile,
-  // Address,
   Request,
   RequestLocation,
   Category,
@@ -14,7 +13,6 @@ import {
   Message,
   Payment,
   Rating,
-  // Language,
   Tenant,
 } from './entities';
 
@@ -46,7 +44,6 @@ import {
     TypeOrmModule.forFeature([
       User,
       Profile,
-      // Address,
       Request,
       RequestLocation,
       Category,
@@ -55,7 +52,6 @@ import {
       Message,
       Payment,
       Rating,
-      // Language,
       Tenant,
     ]),
   ],

@@ -7,6 +7,7 @@ import {
   Body,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -15,11 +16,16 @@ import {
   ApiBearerAuth,
   ApiParam,
   ApiBody,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { UpdateUserDto, UserResponseDto } from './dto/user.dto';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { JwtPayload } from 'src/auth/interfaces/jwt-payload.interface';
+import {
+  ListRequestDto,
+  ListResponseDto,
+} from 'src/common/classes/pagination/pagination.dto';
 
 @ApiTags('Users')
 @ApiBearerAuth('bearer')
@@ -41,8 +47,22 @@ export class UsersController {
     status: 401,
     description: 'Unauthorized',
   })
-  async findAll(): Promise<UserResponseDto[]> {
-    return this.usersService.findAll();
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number for pagination',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Number of records per page for pagination',
+    example: 10,
+  })
+  async findAll(
+    @Query() query: ListRequestDto,
+  ): Promise<ListResponseDto<UserResponseDto>> {
+    return this.usersService.findAll(query);
   }
 
   @Get(':id')
