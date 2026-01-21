@@ -4,6 +4,9 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { QueryProvider } from "@/context/query-provider";
 import { PWAInstaller } from "@/components/common/PWAInstaller";
+import { getLocale } from "@/src/lib/i18n/detect";
+import LanguageSwitcher from "@/components/common/LanguageSwitcher";
+import React from "react";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -50,25 +53,31 @@ export const viewport: Viewport = {
   viewportFit: "cover",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <head>
         <meta name="theme-color" content="#4f46e5" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        <title>Your Local Guide</title>
       </head>
       <body
-        className={`${montserrat.variable} ${geistSans.variable} ${geistMono.variable}`}
+        className={`
+        min-h-dvh bg-gradient-to-b from-primary-50 to-white text-navy-800
+        ${montserrat.variable} ${geistSans.variable} ${geistMono.variable}`}
         suppressHydrationWarning
       >
         <QueryProvider>
-          <PWAInstaller />
+          <LanguageSwitcher currentLocale={locale} />
           {children}
+          <PWAInstaller />
         </QueryProvider>
       </body>
     </html>
