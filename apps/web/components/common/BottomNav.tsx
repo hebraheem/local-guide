@@ -15,7 +15,7 @@ const BottomNav = () => {
   );
 
   return (
-    <nav className="sticky bottom-0 z-20 border-t border-primary-100 bg-white/95 backdrop-blur">
+    <nav className="fixed bottom-0 z-20 border-t border-primary-100 bg-white/95 backdrop-blur">
       <div className="mx-auto sm:max-w-3xl px-4 py-2 grid grid-cols-5 gap-2">
         <Item
           label="HOME"

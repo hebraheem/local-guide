@@ -4,6 +4,8 @@ import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import { getLocale } from "@/src/lib/i18n/detect";
 import React from "react";
 
+import home from '@/public/svg/home_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg'
+
 type IconButton = {
   label: string;
   href?: string;
@@ -72,6 +74,7 @@ export default async function AppHeader({
         )}
 
         <div className="flex items-center gap-2">
+          <Image src={home} alt="App Logo" width={28} height={28}  />
           <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-yellow-300 text-primary-700">
             <svg
               xmlns="http://www.w3.org/2000/svg"

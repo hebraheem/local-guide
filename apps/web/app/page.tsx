@@ -7,7 +7,7 @@ import ActionButtons from "@/components/ActionButtons";
 const Land = async () => {
   const { t } = await initTranslations();
   return (
-    <>
+    <div className="min-h-dvh bg-brand-bg text-brand-text dark:bg-brand-bg-dark dark:text-brand-text-dark">
       <section
         className={`flex flex-col items-center justify-center h-[calc(100vh-var(--header-h))]`}
       >
@@ -19,7 +19,7 @@ const Land = async () => {
         </div>
         <ActionButtons />
       </section>
-    </>
+    </div>
   );
 };
 

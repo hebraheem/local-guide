@@ -70,7 +70,7 @@ const Input = ({
           className={`${type === "password" ? "" : "hidden"} px-4 py-4`}
         >
           <span className="material-symbols-outlined bg-primary-100 dark:text-primary-800">
-            {inputType === "password" ? "visibility" : "visibility_off"}
+            {inputType !== "password" ? "visibility" : "visibility_off"}
           </span>
         </button>
       </div>
