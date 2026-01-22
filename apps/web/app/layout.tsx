@@ -70,11 +70,16 @@ export default async function RootLayout({
         <meta name="theme-color" content="#4f46e5" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined"
+          rel="stylesheet"
+        />
         <title>Your Local Guide</title>
       </head>
       <body
         className={`${montserrat.variable} ${geistSans.variable} ${geistMono.variable}`}
         suppressHydrationWarning
+        style={{ "--header-h": `${ROOT_LAYOUT_HEADER_HEIGHT}px` } as any}
       >
         <QueryProvider>
           <div className="min-h-dvh bg-brand-bg text-brand-text dark:bg-brand-bg-dark dark:text-brand-text-dark">

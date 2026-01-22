@@ -6,5 +6,8 @@
   "MAP": "Karte",
   "CHAT": "Chat",
   "PROFILE": "Profil",
-  "ADD": "Hinzufügen"
+  "ADD": "Hinzufügen",
+  "LOGIN": "Anmelden",
+  "SIGN_UP": "Registrieren",
+  "LOGIN_EMAIL": "E-Mail"
 }

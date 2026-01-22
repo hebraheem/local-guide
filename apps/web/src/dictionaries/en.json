@@ -6,5 +6,8 @@
   "MAP": "Map",
   "CHAT": "Chat",
   "PROFILE": "Profile",
-  "ADD": "Add"
+  "ADD": "Add",
+  "LOGIN": "Login",
+  "SIGN_UP": "Sign Up",
+  "LOGIN_EMAIL": "Email"
 }

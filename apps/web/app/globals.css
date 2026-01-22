@@ -20,7 +20,7 @@
 
   a { @apply no-underline; }
 
-  button { @apply focus:outline-none font-semibold border-none rounded-xl px-4 py-2; }
+  button { @apply focus:outline-none font-semibold border-none rounded-xl px-4 py-4; }
 }
 
 html,

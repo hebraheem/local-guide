@@ -1,27 +1,24 @@
 "use client";
 
-import React, { useTransition, useState } from "react";
-import useTranslation from "@/hooks/useTranslation";
+import React, { useState, startTransition } from "react";
 
 type Props = {
   currentLocale: string;
 };
 
-const LanguageSwitcher =  ({ currentLocale }: Props) => {
-  const [pending, startTransition] = useTransition();
+const LanguageSwitcher = ({ currentLocale }: Props) => {
   const [value, setValue] = useState(currentLocale);
 
-  const { t } = useTranslation();
+  const onChange = (value: "en" | "de") => {
+    console.log("value", value);
 
-  const onChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const lng = e.target.value;
-    setValue(lng);
+    setValue(value);
     startTransition(async () => {
       try {
         await fetch("/api/lang", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ lng }),
+          body: JSON.stringify({ lng:value }),
           cache: "no-store",
         });
         // Reload to re-render server components with the new cookie
@@ -33,18 +30,22 @@ const LanguageSwitcher =  ({ currentLocale }: Props) => {
   };
 
   return (
-    <label className="inline-flex items-center gap-2 text-sm">
-      <span className="text-primary-800">{t("language")}:</span>
-      <select
-        value={value}
-        onChange={onChange}
-        disabled={pending}
-        className="border rounded px-2 py-1"
+    <>
+      <button
+        type="button"
+        onClick={() => onChange("en")}
+        className={`${value === "en" && "hidden"} hover:underline`}
       >
-        <option value="en">English</option>
-        <option value="de">Deutsch</option>
-      </select>
-    </label>
+        EN
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange("de")}
+        className={`${value === "de" && "hidden"} hover:underline`}
+      >
+        DE
+      </button>
+    </>
   );
 };
 

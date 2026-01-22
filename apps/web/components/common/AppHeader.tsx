@@ -12,11 +12,11 @@ type IconButton = {
 };
 
 type Props = {
-  title?: string;
-  backHref?: string;
-  leftIcon?: React.ReactNode;
-  rightIcons?: IconButton[];
-  showLanguage?: boolean;
+  title: string;
+  backHref: string;
+  leftIcon: React.ReactNode;
+  rightIcons: IconButton[];
+  showLanguage: boolean;
 };
 
 // Server component header so it can include SSR LanguageSwitcher currentLocale prop from cookies
@@ -26,7 +26,7 @@ export default async function AppHeader({
   leftIcon,
   rightIcons = [],
   showLanguage = false,
-}: Props) {
+}: Partial<Props>) {
   const locale = await getLocale();
 
   return (

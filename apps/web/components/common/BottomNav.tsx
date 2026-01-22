@@ -6,7 +6,7 @@ import useTranslation from "@/hooks/useTranslation";
 const BottomNav = () => {
   const { t } = useTranslation()
   const Item = ({ label, icon }: { label: string; icon: React.ReactNode }) => (
-    <button className="flex flex-col items-center justify-center gap-1 text-[11px] font-medium text-navy-500 text-primary-600">
+    <button className="flex flex-col items-center justify-center gap-1 font-medium">
       <span className="h-10 w-10 rounded-xl bg-white shadow-soft border border-primary-100 flex items-center justify-center ">
         {icon}
       </span>
@@ -16,7 +16,7 @@ const BottomNav = () => {
 
   return (
     <nav className="sticky bottom-0 z-20 border-t border-primary-100 bg-white/95 backdrop-blur">
-      <div className="mx-auto max-w-3xl px-4 py-2 grid grid-cols-5 gap-2">
+      <div className="mx-auto sm:max-w-3xl px-4 py-2 grid grid-cols-5 gap-2">
         <Item
           label="HOME"
           icon={
