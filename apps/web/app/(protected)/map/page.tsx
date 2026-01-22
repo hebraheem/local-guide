@@ -1,7 +1,7 @@
-import AppHeader from "@/components/common/AppHeader";
-import SearchBar from "@/components/common/SearchBar";
-import TabNav from "@/components/common/TabNav";
-import BottomNav from "@/components/common/BottomNav";
+import AppHeader from "@/common/AppHeader";
+import SearchBar from "@/common/SearchBar";
+import TabNav from "@/common/TabNav";
+import BottomNav from "@/common/BottomNav";
 import React from "react";
 
 export default async function MapPage() {

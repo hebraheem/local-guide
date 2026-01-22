@@ -3,7 +3,7 @@ import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { QueryProvider } from "@/context/query-provider";
-import { PWAInstaller } from "@/components/common/PWAInstaller";
+// import { PWAInstaller } from "@/components/common/PWAInstaller";
 import { getLocale } from "@/src/lib/i18n/detect";
 import { getTheme } from "@/src/lib/theme/detect";
 import React from "react";
@@ -94,7 +94,7 @@ export default async function RootLayout({
       >
         <QueryProvider>
           <main>{children}</main>
-          <PWAInstaller />
+          {/*<PWAInstaller />*/}
         </QueryProvider>
       </body>
     </html>

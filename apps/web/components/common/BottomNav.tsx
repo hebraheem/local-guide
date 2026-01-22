@@ -1,24 +1,26 @@
 "use client";
 import React from "react";
 import useTranslation from "@/hooks/useTranslation";
-
+import Link from "next/link";
+import { PAGE_LINKS } from "@/constant/page.links";
 
 const BottomNav = () => {
   const { t } = useTranslation()
-  const Item = ({ label, icon }: { label: string; icon: React.ReactNode }) => (
-    <button className="flex flex-col items-center justify-center gap-1 font-medium">
-      <span className="h-10 w-10 rounded-xl bg-white shadow-soft border border-primary-100 flex items-center justify-center ">
+  const Item = ({ label, icon, href }: { label: string; icon: React.ReactNode; href: string }) => (
+    <Link href={href} className="flex flex-col items-center justify-center gap-1 font-medium text-xs">
+      <span className="h-10 w-10 rounded-xl bg-white dark:bg-gray-800 shadow-md border border-gray-100 dark:border-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-300">
         {icon}
       </span>
-      {t(label)}
-    </button>
+      <span className="text-gray-700 dark:text-gray-300">{t(label)}</span>
+    </Link>
   );
 
   return (
-    <nav className="fixed bottom-0 z-20 border-t border-primary-100 bg-white/95 backdrop-blur">
+    <nav className="fixed bottom-0 left-0 right-0 z-20 border-t border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg">
       <div className="mx-auto sm:max-w-3xl px-4 py-2 grid grid-cols-5 gap-2">
         <Item
           label="HOME"
+          href="/dashboard"
           icon={
             <svg
               width="20"
@@ -37,6 +39,7 @@ const BottomNav = () => {
         />
         <Item
           label="MAP"
+          href="/map"
           icon={
             <svg
               width="20"
@@ -55,27 +58,29 @@ const BottomNav = () => {
           }
         />
         <div className="flex items-center justify-center">
-          <button
+          <Link
+            href="/post"
             aria-label="ADD"
-            className="h-12 w-12 -mt-6 rounded-full bg-secondary-500 text-white shadow-card flex items-center justify-center"
+            className="h-14 w-14 -mt-6 rounded-full bg-gradient-to-br from-secondary-500 to-secondary-600 dark:from-secondary-600 dark:to-secondary-700 text-white shadow-lg hover:shadow-xl flex items-center justify-center transition-all transform hover:scale-105"
           >
             <svg
-              width="20"
-              height="20"
+              width="24"
+              height="24"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
-              strokeWidth="2"
+              strokeWidth="2.5"
               strokeLinecap="round"
               strokeLinejoin="round"
             >
               <line x1="12" y1="5" x2="12" y2="19" />
               <line x1="5" y1="12" x2="19" y2="12" />
             </svg>
-          </button>
+          </Link>
         </div>
         <Item
           label="CHAT"
+          href="/chat"
           icon={
             <svg
               width="20"
@@ -93,6 +98,7 @@ const BottomNav = () => {
         />
         <Item
           label="PROFILE"
+          href="/profile"
           icon={
             <svg
               width="20"

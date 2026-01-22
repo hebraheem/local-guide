@@ -1,5 +1,5 @@
-import AppHeader from "@/components/common/AppHeader";
-import BottomNav from "@/components/common/BottomNav";
+import AppHeader from "@/common/AppHeader";
+import BottomNav from "@/common/BottomNav";
 import React from "react";
 
 export default async function PostRequestPage() {

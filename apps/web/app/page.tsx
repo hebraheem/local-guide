@@ -372,7 +372,7 @@ const LandingPage = async () => {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href={PAGE_LINKS.SIGNUP}
-                  className="bg-white hover:bg-gray-100 text-primary-700 px-8 py-4 rounded-full font-semibold text-lg transition-all shadow-lg hover:shadow-2xl hover:scale-105 transform duration-300"
+                  className="bg-white hover:bg-gray-100 dark:text-primary-700 text-primary-700 px-8 py-4 rounded-full font-semibold text-lg transition-all shadow-lg hover:shadow-2xl hover:scale-105 transform duration-300"
                 >
                   {t("SIGN_UP")}
                 </Link>
