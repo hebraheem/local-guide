@@ -9,5 +9,20 @@
   "ADD": "Hinzufügen",
   "LOGIN": "Anmelden",
   "SIGN_UP": "Registrieren",
-  "LOGIN_EMAIL": "E-Mail"
+  "LOGIN_EMAIL": "E-Mail",
+  "LOGIN_PASSWORD": "Passwort",
+  "WELCOME_BACK": "Willkommen zurück",
+  "LOG_IN_TO_CONTINUE": "Melden Sie sich an, um fortzufahren",
+  "DONT_HAVE_AN_ACCOUNT": "Sie haben noch kein Konto",
+  "FORGOT_PASSWORD": "Passwort vergessen?",
+  "RESET_YOUR_PASSWORD": "Setzen Sie Ihr Passwort zurück",
+  "PROVIDE_YOUR_EMAIL_TO_RESET_PASSWORD": "Geben Sie Ihre E-Mail an, um Ihr Passwort zurückzusetzen",
+  "REMEMBER_PASSWORD": "Passwort erinnern?",
+  "REQUEST_PASSWORD_RESET": "Zurücksetzen des Passworts anfordern",
+  "WE_ARE_HAPPY_TO_HAVE_YOU_ON_BOARD": "Wir freuen uns, Sie an Bord zu haben",
+  "ALREADY_HAVE_AN_ACCOUNT": "Sie haben bereits ein Konto",
+  "IS_REQUIRED": "ist erforderlich",
+  "john.doe@example.com": "john.doe@example.com",
+  "**********": "**********",
+  "USERNAME": "Benutzername"
 }
