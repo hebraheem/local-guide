@@ -68,8 +68,8 @@ export class PaginateQuery<Entity extends ObjectLiteral, R> {
         : (entities as unknown as R[]),
       meta: {
         totalPages,
-        currentPage: page,
-        limit: take,
+        currentPage: +page,
+        limit: +take,
         totalRecords,
       },
     };

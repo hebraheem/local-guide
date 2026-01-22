@@ -28,13 +28,15 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Your Local Guide",
-  description: "Connect people who need help with those willing to help them",
+  title: "Local Guide - Get Help. Give Help. Build Community.",
+  description: "Connect with local helpers in your community for services, support, and friendship. Get translation, city tours, study help, and more.",
   manifest: "/manifest.json",
+  keywords: ["local guide", "community help", "translation", "city tours", "local services", "helper network", "community support"],
+  authors: [{ name: "Local Guide Team" }],
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "Your Local Guide",
+    title: "Local Guide",
   },
   formatDetection: {
     telephone: false,
@@ -44,6 +46,17 @@ export const metadata: Metadata = {
       { url: "../public/icon-192x192.png", sizes: "192x192" },
       { url: "../public/icon-512x512.png", sizes: "512x512" },
     ],
+  },
+  openGraph: {
+    title: "Local Guide - Connect with Local Helpers",
+    description: "Get help with translation, city tours, study help, and more from your local community",
+    type: "website",
+    siteName: "Local Guide",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Local Guide - Connect with Local Helpers",
+    description: "Get help with translation, city tours, study help, and more from your local community",
   },
 };
 
