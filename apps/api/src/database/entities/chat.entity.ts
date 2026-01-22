@@ -19,7 +19,8 @@ export class Chat {
   createdAt: Date;
 
   @ManyToOne(() => Request, (request) => request.chats, {
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
+    nullable: true,
   })
   @JoinColumn()
   request: Request;

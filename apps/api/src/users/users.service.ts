@@ -1,16 +1,8 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
-import { ConfigService } from '@nestjs/config';
-import * as bcrypt from 'bcryptjs';
-import { User, Profile, Tenant, Role } from '../database/entities';
+import { FindOptionsRelations, ILike, Repository } from 'typeorm';
+import { User, Profile, Role, LocationEntity } from '../database/entities';
 import {
-  CreateUserDto,
   SearchAndFilterDto,
   UpdateUserDto,
   UserResponseDto,
@@ -22,6 +14,8 @@ import {
   ListResponseDto,
 } from 'src/common/classes/pagination/pagination.dto';
 import { PaginateQuery } from 'src/common/classes/pagination/paginate.class';
+import { LocationParamDto } from './dto/location.dto';
+import { EARTH_RADIUS_IN_KM } from '../common/constants/utils';
 
 @Injectable()
 export class UsersService {
@@ -30,40 +24,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(Profile)
-    private readonly profileRepository: Repository<Profile>,
-    @InjectRepository(Tenant)
-    private readonly tenantRepository: Repository<Tenant>,
-    private readonly configService: ConfigService,
   ) {}
-
-  async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
-    const { username, email, password, roles } = createUserDto;
-
-    const existingUser = await this.userRepository.findOne({
-      where: [{ username }, { email }],
-    });
-
-    if (existingUser) {
-      throw new BadRequestException('User already exists');
-    }
-
-    const hashedPassword = await this.hashPassword(password);
-    const tenant = await this.getOrCreateDefaultTenant();
-
-    const user = await this.userRepository.save({
-      username,
-      email,
-      password: hashedPassword,
-      roles: (roles as Role[]) || [Role.REQUESTER],
-      tenant,
-      profile: {},
-      tenantId: tenant.id,
-    });
-
-    this.logger.log(`User created: ${user.id}`);
-    return this.mapUserToResponse(user);
-  }
 
   async findAll(
     query: ListRequestDto & SearchAndFilterDto,
@@ -100,6 +61,8 @@ export class UsersService {
       query,
       where,
       this.mapUserToResponse.bind(this) as (entity: User) => UserResponseDto,
+      {},
+      ['profile', 'location'] as FindOptionsRelations<User>,
     );
 
     return paginateQuery.paginate();
@@ -108,7 +71,7 @@ export class UsersService {
   async findById(id: string): Promise<UserResponseDto> {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['profile'],
+      relations: ['profile', 'location'],
     });
 
     if (!user) {
@@ -118,14 +81,91 @@ export class UsersService {
     return this.mapUserToResponse(user);
   }
 
+  async findUserByLocation(
+    query: ListRequestDto,
+    location: LocationParamDto,
+  ): Promise<ListResponseDto<UserResponseDto>> {
+    const { latitude, longitude, radiusInKm } = location;
+    const { page = 1, limit = 10 } = query;
+    const skip = (page - 1) * limit;
+    const users = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.location', 'location')
+      .leftJoinAndSelect('user.profile', 'profile')
+      .where(
+        `
+      (
+        ${EARTH_RADIUS_IN_KM} * acos(
+          cos(radians(:lat)) * cos(radians(location.latitude)) *
+          cos(radians(location.longitude) - radians(:lng)) +
+          sin(radians(:lat)) * sin(radians(location.latitude))
+        )
+      ) <= :radius
+      `,
+        {
+          lat: latitude,
+          lng: longitude,
+          radius: radiusInKm,
+        },
+      )
+      .andWhere('"user"."deletedAt" IS NULL')
+      .skip(skip)
+      .take(limit)
+      .getMany();
+
+    const total = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.location', 'location')
+      .where(
+        `
+    (
+      ${EARTH_RADIUS_IN_KM} * acos(
+        cos(radians(:lat)) * cos(radians(location.latitude)) *
+        cos(radians(location.longitude) - radians(:lng)) +
+        sin(radians(:lat)) * sin(radians(location.latitude))
+      )
+    ) <= :radius
+    `,
+        {
+          lat: latitude,
+          lng: longitude,
+          radius: radiusInKm,
+        },
+      )
+      .andWhere('"user"."deletedAt" IS NULL')
+      .getCount();
+
+    const data = users.map((user) => this.mapUserToResponse(user));
+    return {
+      data,
+      meta: {
+        totalRecords: total,
+        limit,
+        totalPages: Math.ceil(total / limit),
+        currentPage: page,
+      },
+    };
+  }
+
   async update(
     id: string,
     updateUserDto: UpdateUserDto,
   ): Promise<UserResponseDto> {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: ['profile', 'location', 'profile.address'],
+    });
 
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    if (updateUserDto.location) {
+      // merge: if existing location exists keep its id so save will update; otherwise create a new object
+      user.location = {
+        ...(user.location ? { id: user.location.id } : {}),
+        ...updateUserDto.location,
+      } as unknown as LocationEntity;
     }
 
     if (updateUserDto.username) {
@@ -137,46 +177,59 @@ export class UsersService {
     if (updateUserDto.roles) {
       user.roles = updateUserDto.roles as Role[];
     }
+
     if (updateUserDto.profile) {
-      let profile = await this.profileRepository.findOne({
-        where: { id: user.profile?.id },
-      });
+      user.profile = {
+        // preserve profile id if exists so cascade updates
+        ...(user.profile ? { id: user.profile.id } : {}),
+        ...updateUserDto.profile,
+        // handle nested address id the same way
+        address: updateUserDto.profile.address
+          ? {
+              ...(user.profile?.address ? { id: user.profile.address.id } : {}),
+              ...updateUserDto.profile.address,
+            }
+          : user.profile?.address,
+      } as unknown as Profile;
 
-      if (!profile) {
-        profile = this.profileRepository.create();
-      }
-      profile.firstName = updateUserDto.profile.firstName ?? profile.firstName;
-      profile.lastName = updateUserDto.profile.lastName ?? profile.lastName;
-      profile.bio = updateUserDto.profile.bio ?? profile.bio;
-      profile.avatarUrl = updateUserDto.profile.avatarUrl ?? profile.avatarUrl;
-      profile.phone = updateUserDto.profile.phone ?? profile.phone;
-      profile.languages = updateUserDto.profile.languages ?? profile.languages;
-      profile.avatarUrl = updateUserDto.profile.avatarUrl ?? profile.avatarUrl;
-      profile.user = user;
-
-      if (updateUserDto.profile.address) {
-        if (!profile.address) {
-          profile.address = {} as AddressDto;
-        }
-        profile.address.street =
-          updateUserDto.profile.address.street ?? profile.address.street;
-        profile.address.city =
-          updateUserDto.profile.address.city ?? profile.address.city;
-        profile.address.state =
-          updateUserDto.profile.address.state ?? profile.address.state;
-        profile.address.zipCode =
-          updateUserDto.profile.address.zipCode ?? profile.address.zipCode;
-        profile.address.country =
-          updateUserDto.profile.address.country ?? profile.address.country;
-        profile.address.latitude =
-          updateUserDto.profile.address.latitude ?? profile.address.latitude;
-        profile.address.longitude =
-          updateUserDto.profile.address.longitude ?? profile.address.longitude;
-        profile.address.number =
-          updateUserDto.profile.address.number ?? profile.address.number;
-      }
-      const savedProfile = await this.profileRepository.save(profile);
-      user.profile = savedProfile;
+      // let profile = await this.profileRepository.findOne({
+      //   where: { id: user.profile?.id },
+      // });
+      //
+      // if (!profile) {
+      //   profile = this.profileRepository.create();
+      // }
+      // profile.firstName = updateUserDto.profile.firstName ?? profile.firstName;
+      // profile.lastName = updateUserDto.profile.lastName ?? profile.lastName;
+      // profile.bio = updateUserDto.profile.bio ?? profile.bio;
+      // profile.avatarUrl = updateUserDto.profile.avatarUrl ?? profile.avatarUrl;
+      // profile.phone = updateUserDto.profile.phone ?? profile.phone;
+      // profile.languages = updateUserDto.profile.languages ?? profile.languages;
+      // profile.avatarUrl = updateUserDto.profile.avatarUrl ?? profile.avatarUrl;
+      // profile.user = user;
+      //
+      // if (updateUserDto.profile.address) {
+      //   if (!profile.address) {
+      //     profile.address = {} as AddressDto;
+      //   }
+      //   profile.address.street =
+      //     updateUserDto.profile.address.street ?? profile.address.street;
+      //   profile.address.city =
+      //     updateUserDto.profile.address.city ?? profile.address.city;
+      //   profile.address.state =
+      //     updateUserDto.profile.address.state ?? profile.address.state;
+      //   profile.address.zipCode =
+      //     updateUserDto.profile.address.zipCode ?? profile.address.zipCode;
+      //   profile.address.country =
+      //     updateUserDto.profile.address.country ?? profile.address.country;
+      //   profile.address.latitude =
+      //     updateUserDto.profile.address.latitude ?? profile.address.latitude;
+      //   profile.address.longitude =
+      //     updateUserDto.profile.address.longitude ?? profile.address.longitude;
+      //   profile.address.number =
+      //     updateUserDto.profile.address.number ?? profile.address.number;
+      // }
+      // user.profile = await this.profileRepository.save(profile);
     }
 
     const updatedUser = await this.userRepository.save(user);
@@ -191,13 +244,6 @@ export class UsersService {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
     this.logger.log(`User deleted: ${id}`);
-  }
-
-  private async hashPassword(password: string): Promise<string> {
-    const rounds: number = parseInt(
-      this.configService.get('auth.bcryptRounds') ?? '10',
-    );
-    return bcrypt.hash(password, rounds);
   }
 
   private mapUserToResponse(user: User): UserResponseDto {
@@ -230,22 +276,9 @@ export class UsersService {
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
       deletedAt: user.deletedAt,
+      location: user.location,
+      lastLogin: user.lastLogin,
       profile,
     };
-  }
-
-  private async getOrCreateDefaultTenant(): Promise<Tenant> {
-    let tenant = await this.tenantRepository.findOne({
-      where: { name: 'default' },
-    });
-
-    if (!tenant) {
-      tenant = await this.tenantRepository.save({
-        name: 'default',
-        state: 'active',
-      });
-    }
-
-    return tenant;
   }
 }

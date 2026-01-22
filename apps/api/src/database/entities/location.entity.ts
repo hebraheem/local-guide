@@ -9,14 +9,14 @@ import {
 import { User } from './user.entity';
 
 @Entity('locations')
-export class Location {
+export class LocationEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'float' })
+  @Column({ type: 'float', nullable: true })
   latitude: number;
 
-  @Column({ type: 'float' })
+  @Column({ type: 'float', nullable: true })
   longitude: number;
 
   @CreateDateColumn()

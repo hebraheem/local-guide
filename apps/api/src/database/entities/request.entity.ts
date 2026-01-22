@@ -60,9 +60,7 @@ export class Request {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Category, (category) => category.requests, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(() => Category, (category) => category.requests)
   @JoinColumn()
   category: Category;
 
@@ -70,7 +68,8 @@ export class Request {
   categoryId: string;
 
   @ManyToOne(() => RequestLocation, (location) => location.requests, {
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
+    nullable: true,
   })
   @JoinColumn()
   location: RequestLocation;
@@ -79,7 +78,8 @@ export class Request {
   locationId: string;
 
   @ManyToOne(() => User, (user) => user.requestsCreated, {
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
+    nullable: true,
   })
   @JoinColumn()
   requestBy: User;
@@ -97,9 +97,7 @@ export class Request {
   @Column({ nullable: true })
   acceptedById: string;
 
-  @OneToMany(() => Chat, (chat) => chat.request, {
-    cascade: true,
-  })
+  @OneToMany(() => Chat, (chat) => chat.request)
   chats: Chat[];
 
   @OneToOne(() => Payment, (payment) => payment.request, {

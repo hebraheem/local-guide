@@ -8,6 +8,7 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -31,6 +32,7 @@ import {
   ListResponseDto,
 } from 'src/common/classes/pagination/pagination.dto';
 import { ResponseDto } from 'src/common/classes/success.response';
+import { LocationParamDto } from './dto/location.dto';
 
 @ApiTags('Users')
 @ApiBearerAuth('bearer')
@@ -89,6 +91,56 @@ export class UsersController {
     @Query() query: ListRequestDto & SearchAndFilterDto,
   ): Promise<ListResponseDto<UserResponseDto>> {
     return this.usersService.findAll(query);
+  }
+
+  @Get('location/:latitude/:longitude/:radiusInKm')
+  @ApiOperation({
+    summary: 'Find users by location',
+    description:
+      'Retrieve a list of users within a specified radius of given latitude and longitude.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'List of users by location',
+    type: [UserResponseDto],
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  @ApiParam({
+    name: 'latitude',
+    description: 'Latitude of the location',
+    example: '37.7749',
+  })
+  @ApiParam({
+    name: 'longitude',
+    description: 'Longitude of the location',
+    example: '-122.4194',
+  })
+  @ApiParam({
+    name: 'radiusInKm',
+    description: 'Radius in kilometers to search for users',
+    example: '10',
+  })
+  @ApiQuery({
+    name: 'page',
+    required: false,
+    description: 'Page number for pagination',
+    example: 1,
+  })
+  @ApiQuery({
+    name: 'limit',
+    required: false,
+    description: 'Number of records per page for pagination',
+    example: 10,
+  })
+  async findUserByLocation(
+    @Query() query: ListRequestDto,
+    @Param() location: LocationParamDto,
+  ): Promise<ListResponseDto<UserResponseDto>> {
+    console.log('location', location);
+    return this.usersService.findUserByLocation(query, location);
   }
 
   @Get(':id')

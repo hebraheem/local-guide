@@ -48,7 +48,9 @@ export class AuthService {
       password: hashedPassword,
       roles: registerDto.roles as Role[],
       tenant,
-      profile: {},
+      profile: {
+        address: {},
+      },
       requestsCreated: [],
       requestsAccepted: [],
       ratings: [],

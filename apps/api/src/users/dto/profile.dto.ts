@@ -84,4 +84,7 @@ export class ProfileDto {
     required: false,
   })
   address: Partial<AddressDto>;
+
+  @IsOptional()
+  id?: string;
 }

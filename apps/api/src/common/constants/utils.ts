@@ -1,0 +1,1 @@
+export const EARTH_RADIUS_IN_KM = 6371;

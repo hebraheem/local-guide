@@ -2,16 +2,16 @@ import { DataSource } from 'typeorm';
 import {
   User,
   Profile,
-  // Address,
   Request,
   RequestLocation,
   Category,
-  Location,
   Chat,
   Message,
   Payment,
   Rating,
   Tenant,
+  LocationEntity,
+  Address,
 } from './src/database/entities';
 
 export const AppDataSource = new DataSource({
@@ -26,11 +26,11 @@ export const AppDataSource = new DataSource({
   entities: [
     User,
     Profile,
-    // Address,
+    Address,
     Request,
     RequestLocation,
     Category,
-    Location,
+    LocationEntity,
     Chat,
     Message,
     Payment,

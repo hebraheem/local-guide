@@ -5,11 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   OneToOne,
-  // ManyToOne,
   JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
-import { AddressDto } from 'src/users/dto/address.dto';
+import { Address } from './address.entity';
 
 enum Proficiency {
   BASIC = 'BASIC',
@@ -54,5 +53,8 @@ export class Profile {
   @JoinColumn()
   user: User;
 
-  address: AddressDto | null;
+  @OneToOne(() => Address, (address) => address.profiles, {
+    cascade: ['insert', 'update'],
+  })
+  address: Address;
 }

@@ -1,7 +1,6 @@
 import {
   IsEmail,
   IsString,
-  IsNotEmpty,
   IsOptional,
   IsArray,
   MinLength,
@@ -11,48 +10,8 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { ProfileDto } from './profile.dto';
 import { Role } from 'src/database/entities';
-
-export class CreateUserDto {
-  @ApiProperty({
-    description: 'Username for the account',
-    example: 'john_doe',
-    minLength: 3,
-    maxLength: 100,
-  })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(3)
-  @MaxLength(100)
-  username: string;
-
-  @ApiProperty({
-    description: 'Email address',
-    example: 'john@example.com',
-  })
-  @IsEmail()
-  @IsNotEmpty()
-  email: string;
-
-  @ApiProperty({
-    description: 'Password (minimum 8 characters)',
-    example: 'SecurePassword123',
-    minLength: 8,
-  })
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(8)
-  password: string;
-
-  @ApiProperty({
-    description: 'User roles',
-    example: ['REQUESTER'],
-    isArray: true,
-    required: false,
-  })
-  @IsArray()
-  @IsOptional()
-  roles?: string[];
-}
+import { LocationEntity } from 'src/database/entities/location.entity';
+import { LocationDto } from './location.dto';
 
 export class UpdateUserDto {
   @ApiProperty({
@@ -94,6 +53,14 @@ export class UpdateUserDto {
   })
   @IsOptional()
   profile?: Partial<ProfileDto>;
+
+  @ApiProperty({
+    description: 'Updated location information',
+    required: false,
+    type: LocationEntity,
+  })
+  @IsOptional()
+  location?: Partial<LocationDto>;
 }
 
 export class UserResponseDto {
@@ -173,11 +140,25 @@ export class UserResponseDto {
   profile?: Partial<ProfileDto>;
 
   @ApiProperty({
+    description: 'Updated location information',
+    required: false,
+    type: LocationDto,
+  })
+  @IsOptional()
+  location?: LocationDto;
+
+  @ApiProperty({
     description: 'Account deletion date (if applicable)',
     example: '2026-02-01T00:00:00Z',
   })
   @IsOptional()
   deletedAt?: Date;
+
+  @ApiProperty({
+    description: 'Last login date',
+    example: '2026-01-20T08:30:00Z',
+  })
+  lastLogin: Date;
 }
 
 export class SearchAndFilterDto {

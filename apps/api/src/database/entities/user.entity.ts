@@ -13,7 +13,7 @@ import {
 import { Profile } from './profile.entity';
 import { Request } from './request.entity';
 import { Rating } from './rating.entity';
-import { Location } from './location.entity';
+import { LocationEntity } from './location.entity';
 import { Tenant } from './tenant.entity';
 
 export enum Role {
@@ -66,8 +66,7 @@ export class User {
   updatedAt: Date;
 
   @OneToOne(() => Profile, (profile) => profile.user, {
-    cascade: true,
-    eager: true,
+    cascade: ['insert', 'update'],
   })
   profile?: Profile;
 
@@ -80,13 +79,13 @@ export class User {
   @OneToMany(() => Rating, (rating) => rating.user)
   ratings?: Rating[];
 
-  @ManyToOne(() => Location, (location) => location.users, {
-    nullable: true,
+  @ManyToOne(() => LocationEntity, (location) => location.users, {
+    cascade: ['insert', 'update'],
     onDelete: 'SET NULL',
-    eager: true,
+    nullable: true,
   })
   @JoinColumn()
-  location?: Location;
+  location?: LocationEntity;
 
   @ManyToOne(() => Tenant, (tenant) => tenant.users)
   @JoinColumn()
