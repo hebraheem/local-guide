@@ -25,6 +25,7 @@
   "john.doe@example.com": "john.doe@example.com",
   "**********": "**********",
   "USERNAME": "Username",
+  "NEW_PASSWORD": "New Password",
   "HERO_TITLE": "Get Help. Give Help. Build Community.",
   "HERO_SUBTITLE": "Connect with local helpers in your community for services, support, and friendship",
   "GET_HELP": "Get Help",

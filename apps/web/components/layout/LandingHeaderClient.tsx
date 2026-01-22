@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import React, { useState } from "react";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher";
+import ThemeSwitcher from "@/common/ThemeSwitcher";
+import { Theme } from "@/lib/theme/detect";
 
 type Props = {
   locale: string;
+  theme: Theme;
   translations: {
     howItWorks: string;
     safety: string;
@@ -15,7 +18,7 @@ type Props = {
   };
 };
 
-const LandingHeaderClient = ({ locale, translations }: Props) => {
+const LandingHeaderClient = ({ locale, translations, theme }: Props) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const inPageNavigate = (id: string) => {
@@ -23,7 +26,7 @@ const LandingHeaderClient = ({ locale, translations }: Props) => {
     if (section) {
       section.scrollIntoView({ behavior: "smooth" });
     }
-  }
+  };
   return (
     <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800">
       <div className="container mx-auto px-4 py-4">
@@ -57,6 +60,7 @@ const LandingHeaderClient = ({ locale, translations }: Props) => {
 
           <div className="hidden md:flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+              <ThemeSwitcher currentTheme={theme} />
               <LanguageSwitcher currentLocale={locale} />
             </div>
 

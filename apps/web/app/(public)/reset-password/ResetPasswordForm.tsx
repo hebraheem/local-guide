@@ -17,7 +17,7 @@ const ResetPassword = () => {
   );
   const { t } = useTranslation();
   return (
-    <form className="w-full max-w-sm" action={formAction}>
+    <form className="w-full space-y-1" action={formAction}>
       <Input
         type="password"
         name="password"
@@ -27,8 +27,8 @@ const ResetPassword = () => {
         required
       />
       <Button
-        className="w-full mt-6"
-        appName="login"
+        className="w-full mt-6 bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+        appName="reset-password"
         mode="primary"
         type="submit"
         disabled={isPending}

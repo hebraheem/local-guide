@@ -20,7 +20,7 @@ const LoginForm = () => {
   );
   const { t } = useTranslation();
   return (
-    <form className="w-full max-w-sm" action={formAction}>
+    <form className="w-full space-y-1" action={formAction}>
       <Input
         type="email"
         name="email"
@@ -37,9 +37,16 @@ const LoginForm = () => {
         defaultValue={state.password}
         required
       />
-      <Link href={PAGE_LINKS.REQUEST_RESET_PASSWORD} className="flex justify-end">{t("FORGOT_PASSWORD")}</Link>
+      <div className="flex justify-end pt-2 pb-4">
+        <Link 
+          href={PAGE_LINKS.REQUEST_RESET_PASSWORD} 
+          className="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
+        >
+          {t("FORGOT_PASSWORD")}
+        </Link>
+      </div>
       <Button
-        className="w-full mt-6"
+        className="w-full mt-2 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
         appName="login"
         mode="primary"
         type="submit"

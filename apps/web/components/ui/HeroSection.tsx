@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import Image, { StaticImageData } from "next/image";
 import AnimatedSection from "@/components/ui/AnimatedSection";
+import { PAGE_LINKS } from "@/constant/page.links";
 
 type Props = {
   translations: {
@@ -43,13 +44,13 @@ const HeroSection = ({ translations, heroImage }: Props) => {
             className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start"
           >
             <Link
-              href="/home"
+              href={PAGE_LINKS.SIGNUP}
               className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-full font-semibold text-lg transition-all shadow-lg hover:shadow-xl hover:scale-105 transform duration-300"
             >
               {translations.getHelp}
             </Link>
             <Link
-              href="/home"
+              href={PAGE_LINKS.SIGNUP}
               className="bg-secondary-500 hover:bg-secondary-600 text-gray-900 px-8 py-4 rounded-full font-semibold text-lg transition-all shadow-lg hover:shadow-xl hover:scale-105 transform duration-300"
             >
               {translations.offerHelp}

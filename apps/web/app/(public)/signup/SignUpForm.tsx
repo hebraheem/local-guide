@@ -19,7 +19,7 @@ const SignUpForm = () => {
   );
   const { t } = useTranslation();
   return (
-    <form className="w-full max-w-sm" action={formAction}>
+    <form className="w-full space-y-1" action={formAction}>
       <Input
         type="email"
         name="email"
@@ -33,7 +33,7 @@ const SignUpForm = () => {
         name="username"
         label="USERNAME"
         defaultValue={state.username}
-        placeholder="john.doe@example.com"
+        placeholder="johndoe"
         required
       />
       <Input
@@ -45,8 +45,8 @@ const SignUpForm = () => {
         required
       />
       <Button
-        className="w-full mt-6"
-        appName="login"
+        className="w-full mt-6 bg-gradient-to-r from-secondary-600 to-primary-600 hover:from-secondary-700 hover:to-primary-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02]"
+        appName="signup"
         mode="primary"
         type="submit"
         disabled={isPending}
