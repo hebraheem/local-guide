@@ -67,7 +67,7 @@ export default function DashboardHeader({ userName = "User", userAvatar, current
       {/* Settings Modal */}
       <SettingsModal
         isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
+        onCloseAction={() => setIsSettingsOpen(false)}
         currentLocale={currentLocale}
         currentTheme={currentTheme}
       />

@@ -3,11 +3,12 @@ import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { QueryProvider } from "@/context/query-provider";
-// import { PWAInstaller } from "@/components/common/PWAInstaller";
+import { PWAInstaller } from "@/components/common/PWAInstaller";
 import { getLocale } from "@/src/lib/i18n/detect";
 import { getTheme } from "@/src/lib/theme/detect";
 import React from "react";
 import { ROOT_LAYOUT_HEADER_HEIGHT } from "@/constant/variables";
+import { getTokensOnServer, isTokenValidOnServer } from "@/lib/jwt.server";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -27,9 +28,18 @@ const geistMono = localFont({
 
 export const metadata: Metadata = {
   title: "Local Guide - Get Help. Give Help. Build Community.",
-  description: "Connect with local helpers in your community for services, support, and friendship. Get translation, city tours, study help, and more.",
+  description:
+    "Connect with local helpers in your community for services, support, and friendship. Get translation, city tours, study help, and more.",
   manifest: "/manifest.json",
-  keywords: ["local guide", "community help", "translation", "city tours", "local services", "helper network", "community support"],
+  keywords: [
+    "local guide",
+    "community help",
+    "translation",
+    "city tours",
+    "local services",
+    "helper network",
+    "community support",
+  ],
   authors: [{ name: "Local Guide Team" }],
   appleWebApp: {
     capable: true,
@@ -47,14 +57,16 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Local Guide - Connect with Local Helpers",
-    description: "Get help with translation, city tours, study help, and more from your local community",
+    description:
+      "Get help with translation, city tours, study help, and more from your local community",
     type: "website",
     siteName: "Local Guide",
   },
   twitter: {
     card: "summary_large_image",
     title: "Local Guide - Connect with Local Helpers",
-    description: "Get help with translation, city tours, study help, and more from your local community",
+    description:
+      "Get help with translation, city tours, study help, and more from your local community",
   },
 };
 
@@ -75,6 +87,11 @@ export default async function RootLayout({
   const locale = await getLocale();
   const theme = await getTheme();
 
+  const { token, refreshToken } = await getTokensOnServer();
+
+  const isTokenValid = await isTokenValidOnServer(token);
+  console.log("isTokenValid", isTokenValid);
+
   return (
     <html lang={locale} className={theme === "dark" ? "dark" : undefined}>
       <head>
@@ -94,7 +111,7 @@ export default async function RootLayout({
       >
         <QueryProvider>
           <main>{children}</main>
-          {/*<PWAInstaller />*/}
+          <PWAInstaller />
         </QueryProvider>
       </body>
     </html>

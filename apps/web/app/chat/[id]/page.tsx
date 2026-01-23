@@ -71,7 +71,7 @@ export default async function ChatDetailPage({ params }: Props) {
           {/* Back Button */}
           <Link
             href="/chat"
-            className="h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors"
+            className="h-10 w-10 rounded-full bg-gray-400 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors"
           >
             <svg
               width="20"
@@ -105,21 +105,6 @@ export default async function ChatDetailPage({ params }: Props) {
             </div>
           </div>
 
-          {/* More Options */}
-          <button className="h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors">
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <circle cx="12" cy="12" r="1" />
-              <circle cx="12" cy="5" r="1" />
-              <circle cx="12" cy="19" r="1" />
-            </svg>
-          </button>
         </div>
       </header>
 
@@ -183,7 +168,7 @@ export default async function ChatDetailPage({ params }: Props) {
         <div className="mx-auto max-w-4xl px-4 py-3">
           <div className="flex items-center gap-2">
             {/* Attachment Button */}
-            <button className="h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors flex-shrink-0">
+            <button className="h-10 w-10 rounded-full bg-gray-400 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors flex-shrink-0">
               <svg
                 width="20"
                 height="20"

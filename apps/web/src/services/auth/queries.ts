@@ -40,3 +40,10 @@ export const useLogout = () => {
     },
   });
 };
+
+export const useRefreshToken = () => {
+  return useMutation({
+    mutationFn: authService.refreshToken,
+    onSuccess: () => {},
+  });
+};

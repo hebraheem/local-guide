@@ -39,7 +39,7 @@ const defaultCenter = {
 export default function MapComponent({ requests, center = defaultCenter }: MapComponentProps) {
   const { t } = useTranslation();
   const [selectedRequest, setSelectedRequest] = useState<RequestLocation | null>(null);
-  const [map, setMap] = useState<google.maps.Map | null>(null);
+  const [, setMap] = useState<google.maps.Map | null>(null);
 
   const { isLoaded, loadError } = useGoogleMaps();
 
@@ -117,26 +117,25 @@ export default function MapComponent({ requests, center = defaultCenter }: MapCo
         />
       ))}
 
-      {/* Info window for selected request */}
+      {/* Info window for the selected request */}
       {selectedRequest && (
         <InfoWindow
           position={selectedRequest.position}
           onCloseClick={() => setSelectedRequest(null)}
         >
-          <div className="p-2 max-w-xs">
+          <div className="p-2 max-w-xs dark:bg-gray-800 bg-white rounded-lg shadow-lg">
             <div className="flex items-start justify-between gap-2 mb-2">
               <h3 className="font-bold text-sm text-gray-900 line-clamp-2">
                 {selectedRequest.title}
               </h3>
               {selectedRequest.urgent && (
-                <span className="flex-shrink-0 px-2 py-0.5 bg-red-100 text-red-600 text-[10px] font-bold rounded-full">
+                <span className="flex-shrink-0 px-2 py-0.5 bg-red-100 dark:bg-red-800 text-red-600 text-[10px] font-bold rounded-full animate-pulse">
                   URGENT
                 </span>
               )}
             </div>
-            
             <div className="flex flex-wrap gap-2 mb-2">
-              <span className="inline-flex items-center gap-1 text-xs text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full">
+              <span className="inline-flex items-center gap-1 text-xs text-blue-700 bg-blue-50 dark:bg-primary-800 px-2 py-0.5 rounded-full">
                 {selectedRequest.category}
               </span>
               <span className="text-xs text-gray-600 flex items-center gap-1">

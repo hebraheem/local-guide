@@ -14,16 +14,13 @@ const Input = ({
   type,
   name,
   ...props
-}: React.DetailedHTMLProps<
-  React.InputHTMLAttributes<HTMLInputElement>,
-  HTMLInputElement
-> &
-  InputProps) => {
+}: React.InputHTMLAttributes<HTMLInputElement> & InputProps) => {
   const [inputType, setInputType] = useState(type);
   const [, force] = useState(0);
   const [error, setError] = useState(false);
   const visited = useRef(false);
   const { t } = useTranslation();
+
   className +=
     "dark:text-primary-800 w-full focus:outline-1 focus:border-primary-200 rounded-xl bg-primary-100 outline-none px-4 py-4 text-sm";
 
@@ -46,7 +43,7 @@ const Input = ({
   };
 
   return (
-    <div className="flex flex-col gap-2 w-full py-4">
+    <div className="flex flex-col gap-2 w-full pb-3">
       <label id={`${name}-label`} htmlFor={`${name}-input`}>
         {t(props.label)}
       </label>
@@ -56,23 +53,23 @@ const Input = ({
           id={`${name}-input`}
           className={className}
           onBlur={handleBlur}
+          name={name}
           aria-labelledby={`${name}-label`}
           placeholder={t(props.placeholder ?? "")}
           {...props}
         />
-        <button
-          type="button"
+        <span
           role="button"
           aria-label="Show password"
           onClick={() => {
             setInputType((prev) => (prev === "password" ? "text" : "password"));
           }}
-          className={`${type === "password" ? "" : "hidden"} px-4 py-4`}
+          className={`${type === "password" ? "" : "hidden"} pr-4`}
         >
           <span className="material-symbols-outlined bg-primary-100 dark:text-primary-800">
             {inputType !== "password" ? "visibility" : "visibility_off"}
           </span>
-        </button>
+        </span>
       </div>
       <small className={`text-red-600 ${error ? "" : "hidden"} capitalize`}>
         {name} {t("IS_REQUIRED")}

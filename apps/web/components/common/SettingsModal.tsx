@@ -4,16 +4,24 @@ import React, { useState, useTransition } from "react";
 import useTranslation from "@/hooks/useTranslation";
 import Link from "next/link";
 import { PAGE_LINKS } from "@/constant/page.links";
+import { clearToken } from "@/lib/jwt";
+import { useRouter } from "next/navigation";
 
 type Props = {
   isOpen: boolean;
-  onClose: () => void;
+  onCloseAction: () => void;
   currentLocale: string;
   currentTheme: "light" | "dark";
 };
 
-export default function SettingsModal({ isOpen, onClose, currentLocale, currentTheme }: Props) {
+export default function SettingsModal({
+  isOpen,
+  onCloseAction,
+  currentLocale,
+  currentTheme,
+}: Props) {
   const { t } = useTranslation();
+  const router = useRouter();
   const [locale, setLocale] = useState(currentLocale);
   const [theme, setTheme] = useState<"light" | "dark">(currentTheme);
   const [pending, startTransition] = useTransition();
@@ -59,7 +67,7 @@ export default function SettingsModal({ isOpen, onClose, currentLocale, currentT
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity duration-300"
-        onClick={onClose}
+        onClick={onCloseAction}
         aria-hidden="true"
       />
 
@@ -73,7 +81,7 @@ export default function SettingsModal({ isOpen, onClose, currentLocale, currentT
           <div className="sticky top-0 bg-gradient-to-r from-primary-600 to-secondary-600 dark:from-primary-800 dark:to-secondary-800 text-white px-6 py-4 rounded-t-3xl flex items-center justify-between">
             <h2 className="text-xl font-bold">{t("SETTINGS_TITLE")}</h2>
             <button
-              onClick={onClose}
+              onClick={onCloseAction}
               className="h-8 w-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
               aria-label={t("CLOSE")}
             >
@@ -101,7 +109,11 @@ export default function SettingsModal({ isOpen, onClose, currentLocale, currentT
                         {t("SETTINGS_LANGUAGE")}
                       </h4>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {locale === "en" ? "English" : locale === "de" ? "Deutsch" : "Français"}
+                        {locale === "en"
+                          ? "English"
+                          : locale === "de"
+                            ? "Deutsch"
+                            : "Français"}
                       </p>
                     </div>
                   </div>
@@ -221,7 +233,7 @@ export default function SettingsModal({ isOpen, onClose, currentLocale, currentT
                 {t("SETTINGS_ACCOUNT")}
               </h3>
               <div className="space-y-2">
-                <Link 
+                <Link
                   href={PAGE_LINKS.PROFILE_EDIT}
                   className="w-full flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors"
                 >
@@ -331,7 +343,13 @@ export default function SettingsModal({ isOpen, onClose, currentLocale, currentT
             </section>
 
             {/* Logout Button */}
-            <button className="w-full py-3 px-4 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 font-semibold rounded-xl transition-colors">
+            <button
+              onClick={() => {
+                clearToken();
+                router.push(PAGE_LINKS.LOGIN);
+              }}
+              className="w-full py-3 px-4 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 font-semibold rounded-xl transition-colors"
+            >
               {t("SETTINGS_LOGOUT")}
             </button>
           </div>

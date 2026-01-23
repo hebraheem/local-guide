@@ -1,13 +1,20 @@
+"use client"
 
 import { jwtDecode } from "jwt-decode";
+import { UserRole } from "@/types/user";
 
 export type JwtPayload = {
   sub: string;
   email: string;
-  role: "REQUESTER" | "HELPER" | string;
-  exp: number; // seconds since epoch
+  roles: UserRole;
+  exp: number;
   iat?: number;
   [key: string]: unknown;
+};
+
+export type MinimalAuthUser = {
+  isAuthenticated: boolean;
+  user: JwtPayload | null;
 };
 
 const TOKEN_STORAGE_KEY = "authToken";
@@ -62,3 +69,14 @@ export function isAuthenticated(token?: string | null): boolean {
   const t = token ?? getToken();
   return !isTokenExpired(t ?? undefined);
 }
+
+export  function minimalAuthUser(): MinimalAuthUser {
+  const isAuth = isAuthenticated();
+  console.log("isAuth", isAuth);
+
+  return {
+    isAuthenticated: isAuth,
+    user: isAuth ? decodeJwt(getToken() as string) : null,
+  };
+}
+

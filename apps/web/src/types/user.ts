@@ -7,7 +7,7 @@ export interface User {
   bio?: string;
   phone?: string;
   avatarUrl?: string;
-  roles: string[];
+  roles: UserRole;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -31,3 +31,7 @@ export interface UserProfile {
   phone: string;
   avatarUrl: string;
 }
+
+export type Role = "REQUESTER" | "HELPER" ;
+
+export type UserRole = Role[]

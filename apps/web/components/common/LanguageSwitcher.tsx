@@ -8,17 +8,15 @@ type Props = {
 
 const LanguageSwitcher = ({ currentLocale }: Props) => {
   const [value, setValue] = useState(currentLocale);
-
+  const supportedLanguages = ["en", "de", "fr"] as const;
   const onChange = (value: "en" | "de" | "fr") => {
-    console.log("value", value);
-
     setValue(value);
     startTransition(async () => {
       try {
         await fetch("/api/lang", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ lng:value }),
+          body: JSON.stringify({ lng: value }),
           cache: "no-store",
         });
         // Reload to re-render server components with the new cookie
@@ -30,29 +28,20 @@ const LanguageSwitcher = ({ currentLocale }: Props) => {
   };
 
   return (
-    <>
-      <button
-        type="button"
-        onClick={() => onChange("en")}
-        className={`${value === "en" && "hidden"} hover:underline text-primary-950 dark:text-primary-200`}
-      >
-        EN
-      </button>
-      <button
-        type="button"
-        onClick={() => onChange("de")}
-        className={`${value === "de" && "hidden"} hover:underline text-primary-950 dark:text-primary-200`}
-      >
-        DE
-      </button>
-      <button
-        type="button"
-        onClick={() => onChange("fr")}
-        className={`${value === "fr" && "hidden"} hover:underline text-primary-950 dark:text-primary-200`}
-      >
-        FR
-      </button>
-    </>
+    <span className="ml-3">
+      {supportedLanguages.map((lang) => {
+        return (
+          <span
+            role="button"
+            key={lang}
+            onClick={() => onChange(lang)}
+            className={`${value === lang ? "hidden" : "hover:underline"} text-primary-950 dark:text-primary-200 uppercase font-semi-bold pr-2 cursor-pointer`}
+          >
+            {lang}
+          </span>
+        );
+      })}
+    </span>
   );
 };
 

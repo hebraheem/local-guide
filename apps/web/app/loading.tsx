@@ -10,11 +10,8 @@ export default function Loading() {
           
           {/* Spinning Logo/Icon */}
           <div className="relative">
-            <div className="text-8xl animate-bounce">
+            <div className="text-8xl animate-spin">
               🌍
-            </div>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="h-24 w-24 border-4 border-primary-600 dark:border-primary-400 border-t-transparent rounded-full animate-spin"></div>
             </div>
           </div>
         </div>

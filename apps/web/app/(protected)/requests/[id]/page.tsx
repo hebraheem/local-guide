@@ -11,7 +11,7 @@ export default async function RequestDetailPage({ params }: Props) {
   const { t } = await initTranslations();
   const { id } = await params;
 
-  // Mock request data - replace with real data
+  // Mock request data - replace it with real data
   const request = {
     id,
     title: "Need help with German translation for legal documents",

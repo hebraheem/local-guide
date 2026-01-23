@@ -1,6 +1,14 @@
 "use server";
 
 import { RequestFormTypes } from "@/types/request.types";
+import { redirect } from "next/navigation";
+import { PAGE_LINKS } from "@/constant/page.links";
+import {  setTokensOnServer } from "@/lib/jwt.server";
+
+const testToken =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYTA3Nzc2Ni0xNGIyLTRiNjQtOThlNy03Mzg5MDI1NDIyMTgiLCJ1c2VybmFtZSI6ImpvaG5fZG9lIiwicm9sZXMiOlsiUkVRVUVTVEVSIiwiSEVMUEVSIl0sImlhdCI6MTc2OTE5NDY5MCwiZXhwIjoxNzY5MTk4MjkwfQ.oC2uYHtZEnGwdyS2bWRDlQS32PdTqiYFZ5h0ejVCH3M";
+
+const testRefreshToken = "";
 
 export type LoginTypes = {
   email: string;
@@ -11,16 +19,26 @@ export type SignUpTypes = {
   username: string;
 } & LoginTypes;
 
-export type ResetPasswordTypes = Omit<LoginTypes, "password"> & { success?: boolean };
-export type UpdatePasswordType = Omit<LoginTypes, "email"> & { success?: boolean };
+export type ResetPasswordTypes = Omit<LoginTypes, "password"> & {
+  success?: boolean;
+};
+export type UpdatePasswordType = Omit<LoginTypes, "email"> & {
+  success?: boolean;
+};
 
 export async function submitLoginForm(
-  prevState: LoginTypes,
+  _prevState: LoginTypes,
   formData: FormData,
 ) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  const success = true;
 
+  if (success) {
+    await setTokensOnServer({ token: testToken, refreshToken: testRefreshToken });
+
+    redirect(PAGE_LINKS.DASHBOARD);
+  }
   return {
     success: true,
     email,
@@ -29,13 +47,20 @@ export async function submitLoginForm(
 }
 
 export async function submitSignUpForm(
-  prevState: SignUpTypes,
+  _prevState: SignUpTypes,
   formData: FormData,
 ) {
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
   const username = formData.get("username") as string;
-
+  const success = true;
+  if (success) {
+    await setTokensOnServer({
+      token: testToken,
+      refreshToken: testRefreshToken,
+    });
+    redirect(PAGE_LINKS.DASHBOARD);
+  }
   return {
     success: true,
     email,
@@ -45,7 +70,7 @@ export async function submitSignUpForm(
 }
 
 export async function submitRequestPassword(
-  prevState: ResetPasswordTypes,
+  _prevState: ResetPasswordTypes,
   formData: FormData,
 ) {
   const email = formData.get("email") as string;
@@ -57,7 +82,7 @@ export async function submitRequestPassword(
 }
 
 export async function submitUpdatePassword(
-  prevState: UpdatePasswordType,
+  _prevState: UpdatePasswordType,
   formData: FormData,
 ) {
   const password = formData.get("password") as string;
@@ -86,7 +111,7 @@ export type ProfileUpdateTypes = {
 };
 
 export async function submitProfileUpdate(
-  prevState: ProfileUpdateTypes,
+  _prevState: ProfileUpdateTypes,
   formData: FormData,
 ) {
   const username = formData.get("username") as string;
@@ -100,7 +125,7 @@ export async function submitProfileUpdate(
   const state = formData.get("state") as string;
   const zipCode = formData.get("zipCode") as string;
   const country = formData.get("country") as string;
-  
+
   // Get roles and skills arrays
   const roles = formData.getAll("roles[]") as string[];
   const skills = formData.getAll("skills[]") as string[];
@@ -122,8 +147,6 @@ export async function submitProfileUpdate(
     skills,
   };
 }
-
-
 
 export async function submitRequest(
   prevState: Partial<RequestFormTypes>,
@@ -161,13 +184,5 @@ export async function submitRequest(
     country,
     latitude,
     longitude,
-  };
-}
-
-export async function deleteRequest(requestId: string) {
-  return {
-    success: true,
-    message: "Request deleted successfully",
-    requestId,
   };
 }

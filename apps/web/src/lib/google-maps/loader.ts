@@ -1,6 +1,6 @@
 import { useJsApiLoader, Libraries } from "@react-google-maps/api";
 
-// Define libraries as a constant to ensure same reference across all components
+// Define libraries as a constant to ensure the same reference across all components
 const libraries: Libraries = ["places"];
 
 // Shared configuration for Google Maps API
