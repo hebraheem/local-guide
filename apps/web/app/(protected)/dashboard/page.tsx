@@ -99,7 +99,7 @@ const Dashboard = async () => {
               </svg>
             }
             label={t("DASHBOARD_MY_REQUESTS")}
-            href="/my-requests"
+            href="/requests?self=true"
             variant="secondary"
           />
           <ActionButton

@@ -19,7 +19,7 @@ type Props = {
 const HeroSection = ({ translations, heroImage }: Props) => {
   return (
     <section className="container mx-auto px-4 py-12 md:py-20 overflow-hidden">
-      <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+      <div className="flex flex-col-reverse md:flex-row items-center gap-8 md:gap-12">
         <AnimatedSection className="flex-1 text-center md:text-left" delay={0}>
           <motion.h1
             initial={{ opacity: 0, x: -50 }}

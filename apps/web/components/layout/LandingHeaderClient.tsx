@@ -79,55 +79,69 @@ const LandingHeaderClient = ({ locale, translations, theme }: Props) => {
             </Link>
           </div>
 
-          {/* Mobile menu button */}
-          <button
-            className="md:hidden text-gray-700 dark:text-gray-300"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label="Toggle menu"
-          >
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+          <div className="flex items-center">
+            {/* Mobile menu button */}
+            <button
+              className="md:hidden text-gray-700 dark:text-gray-300"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label="Toggle menu"
             >
-              {mobileMenuOpen ? (
-                <path d="M6 18L18 6M6 6l12 12" />
-              ) : (
-                <path d="M4 6h16M4 12h16M4 18h16" />
-              )}
-            </svg>
-          </button>
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                {mobileMenuOpen ? (
+                  <path d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
+            <div className="md:hidden inline-block mr-2">
+              <ThemeSwitcher currentTheme={theme} />
+            </div>
+          </div>
         </div>
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-gray-200 dark:border-gray-800 pt-4">
             <nav className="flex flex-col gap-4">
-              <Link
-                href="/home"
+              <div
+                role="button"
                 className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => {
+                  inPageNavigate("how-it-works");
+                  setMobileMenuOpen(false);
+                }}
               >
                 {translations.howItWorks}
-              </Link>
-              <Link
-                href="/home"
+              </div>
+              <div
+                role="button"
                 className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => {
+                  inPageNavigate("safety");
+                  setMobileMenuOpen(false);
+                }}
               >
                 {translations.safety}
-              </Link>
-              <Link
-                href="/home"
+              </div>
+              <div
+                role="button"
                 className="text-gray-700 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
+                onClick={() => {
+                  inPageNavigate("about");
+                  setMobileMenuOpen(false);
+                }}
               >
                 {translations.about}
-              </Link>
+              </div>
               <div className="flex items-center gap-2 text-sm">
                 <LanguageSwitcher currentLocale={locale} />
               </div>

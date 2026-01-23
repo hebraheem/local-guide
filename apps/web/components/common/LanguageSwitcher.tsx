@@ -34,14 +34,14 @@ const LanguageSwitcher = ({ currentLocale }: Props) => {
       <button
         type="button"
         onClick={() => onChange("en")}
-        className={`${value === "en" && "hidden"} hover:underline`}
+        className={`${value === "en" && "hidden"} hover:underline text-primary-950 dark:text-primary-200`}
       >
         EN
       </button>
       <button
         type="button"
         onClick={() => onChange("de")}
-        className={`${value === "de" && "hidden"} hover:underline`}
+        className={`${value === "de" && "hidden"} hover:underline text-primary-950 dark:text-primary-200`}
       >
         DE
       </button>

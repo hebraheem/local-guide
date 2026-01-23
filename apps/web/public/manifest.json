@@ -2,7 +2,7 @@
   "name": "Your Local Guide",
   "short_name": "Local Guide",
   "description": "Connect people who need help with those willing to help them",
-  "start_url": "/",
+  "start_url": "/login",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",

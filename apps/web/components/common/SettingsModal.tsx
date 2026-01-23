@@ -75,19 +75,7 @@ export default function SettingsModal({ isOpen, onClose, currentLocale, currentT
               className="h-8 w-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
               aria-label={t("CLOSE")}
             >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <line x1="18" y1="6" x2="6" y2="18" />
-                <line x1="6" y1="6" x2="18" y2="18" />
-              </svg>
+              <span className="material-symbols-outlined">close</span>
             </button>
           </div>
 
@@ -154,7 +142,9 @@ export default function SettingsModal({ isOpen, onClose, currentLocale, currentT
                         {t("SETTINGS_THEME")}
                       </h4>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {theme === "dark" ? t("SETTINGS_THEME_DARK") : t("SETTINGS_THEME_LIGHT")}
+                        {theme === "dark"
+                          ? t("SETTINGS_THEME_DARK")
+                          : t("SETTINGS_THEME_LIGHT")}
                       </p>
                     </div>
                   </div>
