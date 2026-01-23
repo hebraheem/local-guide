@@ -2,6 +2,8 @@
 
 import React, { useState, useTransition } from "react";
 import useTranslation from "@/hooks/useTranslation";
+import Link from "next/link";
+import { PAGE_LINKS } from "@/constant/page.links";
 
 type Props = {
   isOpen: boolean;
@@ -219,7 +221,10 @@ export default function SettingsModal({ isOpen, onClose, currentLocale, currentT
                 {t("SETTINGS_ACCOUNT")}
               </h3>
               <div className="space-y-2">
-                <button className="w-full flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
+                <Link 
+                  href={PAGE_LINKS.PROFILE_EDIT}
+                  className="w-full flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors"
+                >
                   <div className="h-10 w-10 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center text-green-600 dark:text-green-400">
                     👤
                   </div>
@@ -239,7 +244,7 @@ export default function SettingsModal({ isOpen, onClose, currentLocale, currentT
                   >
                     <polyline points="9 18 15 12 9 6" />
                   </svg>
-                </button>
+                </Link>
 
                 <button className="w-full flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-900 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-xl transition-colors">
                   <div className="h-10 w-10 rounded-full bg-orange-100 dark:bg-orange-900 flex items-center justify-center text-orange-600 dark:text-orange-400">
