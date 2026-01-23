@@ -17,14 +17,15 @@ const Dashboard = async () => {
 
   // Mock data - replace with real data from your API
   const mockHelpers = [
-    { name: "Sarah Johnson", role: "Translator", city: "Berlin", rating: 4.9 },
-    { name: "Michael Chen", role: "Tour Guide", city: "Munich", rating: 4.8 },
-    { name: "Anna Schmidt", role: "Study Helper", city: "Berlin", rating: 4.7 },
-    { name: "David Kumar", role: "Event Planner", city: "Hamburg", rating: 4.9 },
+    { id: "1", name: "Sarah Johnson", role: "Translator", city: "Berlin", rating: 4.9 },
+    { id: "2", name: "Michael Chen", role: "Tour Guide", city: "Munich", rating: 4.8 },
+    { id: "3", name: "Anna Schmidt", role: "Study Helper", city: "Berlin", rating: 4.7 },
+    { id: "4", name: "David Kumar", role: "Event Planner", city: "Hamburg", rating: 4.9 },
   ];
 
   const mockRequests = [
     {
+      id: "1",
       title: "Need help with German translation for legal documents",
       category: "Translation",
       location: "Berlin",
@@ -33,6 +34,7 @@ const Dashboard = async () => {
       urgent: true,
     },
     {
+      id: "2",
       title: "Looking for city tour guide this weekend",
       category: "City Tours",
       location: "Munich",
@@ -41,6 +43,7 @@ const Dashboard = async () => {
       urgent: false,
     },
     {
+      id: "3",
       title: "Study partner needed for Math exam preparation",
       category: "Study Help",
       location: "Berlin",
@@ -131,9 +134,10 @@ const Dashboard = async () => {
           </div>
           
           <div className="grid gap-3">
-            {mockHelpers.map((helper, index) => (
+            {mockHelpers.map((helper) => (
               <HelperCard
-                key={index}
+                key={helper.id}
+                id={helper.id}
                 name={helper.name}
                 role={helper.role}
                 city={helper.city}
@@ -158,9 +162,10 @@ const Dashboard = async () => {
           </div>
           
           <div className="grid gap-3">
-            {mockRequests.map((request, index) => (
+            {mockRequests.map((request) => (
               <RequestCard
-                key={index}
+                key={request.id}
+                id={request.id}
                 title={request.title}
                 category={request.category}
                 location={request.location}

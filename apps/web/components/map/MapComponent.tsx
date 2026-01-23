@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useCallback } from "react";
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from "@react-google-maps/api";
+import { GoogleMap, Marker, InfoWindow } from "@react-google-maps/api";
+import { useGoogleMaps } from "@/lib/google-maps/loader";
 import Link from "next/link";
 import useTranslation from "@/hooks/useTranslation";
 
@@ -40,10 +41,7 @@ export default function MapComponent({ requests, center = defaultCenter }: MapCo
   const [selectedRequest, setSelectedRequest] = useState<RequestLocation | null>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
 
-  const { isLoaded, loadError } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-  });
+  const { isLoaded, loadError } = useGoogleMaps();
 
   const onLoad = useCallback((map: google.maps.Map) => {
     setMap(map);

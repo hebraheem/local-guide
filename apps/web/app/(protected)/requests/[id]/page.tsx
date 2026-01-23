@@ -183,6 +183,21 @@ export default async function RequestDetailPage({ params }: Props) {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4">
           <Link
+            href={`/requests/${request.id}/edit`}
+            className="flex-1 px-6 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 text-center"
+          >
+            ✏️ {t("EDIT_REQUEST")}
+          </Link>
+          <button
+            className="flex-1 px-6 py-4 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+          >
+            🗑️ {t("DELETE_REQUEST")}
+          </button>
+        </div>
+
+        {/* Respond Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          <Link
             href={`/requests/${request.id}/respond`}
             className="flex-1 px-6 py-4 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 text-center"
           >

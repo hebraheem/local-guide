@@ -5,6 +5,7 @@ import initTranslations from "@/lib/i18n/server";
 import { getLocale } from "@/lib/i18n/detect";
 import { getTheme } from "@/lib/theme/detect";
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function ProfilePage() {
   const { t } = await initTranslations();
@@ -83,9 +84,12 @@ export default async function ProfilePage() {
               </div>
 
               {/* Edit Button */}
-              <button className="mt-4 md:mt-0 self-start md:self-auto px-6 py-3 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+              <Link
+                href="/profile/edit"
+                className="mt-4 md:mt-0 self-start md:self-auto px-6 py-3 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 text-center"
+              >
                 {t("PROFILE_EDIT")}
-              </button>
+              </Link>
             </div>
 
             {/* Role & Location */}
