@@ -5,10 +5,12 @@ import { initReactI18next } from "react-i18next";
 
 import en from "@/src/dictionaries/en.json";
 import de from "@/src/dictionaries/de.json";
+import fr from "@/src/dictionaries/fr.json";
 
  const resources = {
   en: { translation: en },
   de: { translation: de },
+  fr: { translation: fr },
 };
 
 const fallbackLng = "en" as const;

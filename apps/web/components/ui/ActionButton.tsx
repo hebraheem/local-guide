@@ -22,7 +22,7 @@ export default function ActionButton({ icon, label, href, variant = "primary" }:
       className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl ${variantStyles[variant]}`}
     >
       <div className="text-3xl">{icon}</div>
-      <span className="text-sm font-semibold text-center leading-tight">
+      <span className="text-sm font-semibold text-center leading-tight text-primary-100">
         {label}
       </span>
     </Link>

@@ -1,6 +1,6 @@
 import { headers, cookies } from "next/headers";
 
-export const SUPPORTED_LOCALES = ["en", "de"] as const;
+export const SUPPORTED_LOCALES = ["en", "de", "fr"] as const;
 export type SupportedLocale = typeof SUPPORTED_LOCALES[number];
 
 const FALLBACK_LOCALE: SupportedLocale = "en";

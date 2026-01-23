@@ -9,7 +9,7 @@ type Props = {
 const LanguageSwitcher = ({ currentLocale }: Props) => {
   const [value, setValue] = useState(currentLocale);
 
-  const onChange = (value: "en" | "de") => {
+  const onChange = (value: "en" | "de" | "fr") => {
     console.log("value", value);
 
     setValue(value);
@@ -44,6 +44,13 @@ const LanguageSwitcher = ({ currentLocale }: Props) => {
         className={`${value === "de" && "hidden"} hover:underline text-primary-950 dark:text-primary-200`}
       >
         DE
+      </button>
+      <button
+        type="button"
+        onClick={() => onChange("fr")}
+        className={`${value === "fr" && "hidden"} hover:underline text-primary-950 dark:text-primary-200`}
+      >
+        FR
       </button>
     </>
   );

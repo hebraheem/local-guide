@@ -18,7 +18,7 @@ export default function SettingsModal({ isOpen, onClose, currentLocale, currentT
 
   if (!isOpen) return null;
 
-  const handleLanguageChange = (newLocale: "en" | "de") => {
+  const handleLanguageChange = (newLocale: "en" | "de" | "fr") => {
     setLocale(newLocale);
     startTransition(async () => {
       try {
@@ -99,7 +99,7 @@ export default function SettingsModal({ isOpen, onClose, currentLocale, currentT
                         {t("SETTINGS_LANGUAGE")}
                       </h4>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {locale === "en" ? "English" : "Deutsch"}
+                        {locale === "en" ? "English" : locale === "de" ? "Deutsch" : "Français"}
                       </p>
                     </div>
                   </div>
@@ -126,6 +126,17 @@ export default function SettingsModal({ isOpen, onClose, currentLocale, currentT
                     }`}
                   >
                     Deutsch
+                  </button>
+                  <button
+                    onClick={() => handleLanguageChange("fr")}
+                    disabled={pending}
+                    className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
+                      locale === "fr"
+                        ? "bg-primary-600 text-white shadow-md"
+                        : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+                    }`}
+                  >
+                    Français
                   </button>
                 </div>
               </div>
