@@ -3,12 +3,10 @@ import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import { QueryProvider } from "@/context/query-provider";
-import { PWAInstaller } from "@/components/common/PWAInstaller";
 import { getLocale } from "@/src/lib/i18n/detect";
 import { getTheme } from "@/src/lib/theme/detect";
 import React from "react";
 import { ROOT_LAYOUT_HEADER_HEIGHT } from "@/constant/variables";
-import { getTokensOnServer, isTokenValidOnServer } from "@/lib/jwt.server";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -87,11 +85,6 @@ export default async function RootLayout({
   const locale = await getLocale();
   const theme = await getTheme();
 
-  const { token, refreshToken } = await getTokensOnServer();
-
-  const isTokenValid = await isTokenValidOnServer(token);
-  console.log("isTokenValid", isTokenValid);
-
   return (
     <html lang={locale} className={theme === "dark" ? "dark" : undefined}>
       <head>
@@ -111,7 +104,7 @@ export default async function RootLayout({
       >
         <QueryProvider>
           <main>{children}</main>
-          <PWAInstaller />
+          {/*<PWAInstaller />*/}
         </QueryProvider>
       </body>
     </html>

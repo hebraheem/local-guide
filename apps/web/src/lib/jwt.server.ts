@@ -2,10 +2,24 @@
 
 import { cookies } from "next/headers";
 import { jwtDecode } from "jwt-decode";
-import { JwtPayload, MinimalAuthUser } from "@/lib/jwt";
 
 const TOKEN_STORAGE_KEY = "authToken";
 const REFRESH_TOKEN_STORAGE_KEY = "refreshToken";
+
+export type Role = "REQUESTER" | "HELPER";
+export type JwtPayload = {
+  sub: string;
+  email: string;
+  iat: number;
+  roles: Role[];
+  exp: number;
+  [key: string]: any;
+};
+
+export type MinimalAuthUser = {
+  isAuthenticated: boolean;
+  user: JwtPayload | null;
+};
 
 export async function getServerAuthUser(): Promise<MinimalAuthUser> {
   const token = await getTokenOnServer();
@@ -14,7 +28,6 @@ export async function getServerAuthUser(): Promise<MinimalAuthUser> {
   try {
     const payload = jwtDecode<JwtPayload>(token);
     const expired = await isTokenValidOnServer(token);
-    console.log("expired", expired);
 
     if (expired) return { isAuthenticated: false, user: null };
 
@@ -24,9 +37,10 @@ export async function getServerAuthUser(): Promise<MinimalAuthUser> {
   }
 }
 
-export async function setTokensOnServer(
-  tokens: { token: string; refreshToken: string },
-): Promise<void> {
+export async function setTokensOnServer(tokens: {
+  token: string;
+  refreshToken: string;
+}): Promise<void> {
   const { token, refreshToken } = tokens;
   const cookieStore = await cookies();
   cookieStore.set({
@@ -45,8 +59,9 @@ export async function setTokensOnServer(
   });
 }
 
-
-export async function getTokenOnServer(isRefresh?:boolean): Promise<string | null> {
+export async function getTokenOnServer(
+  isRefresh?: boolean,
+): Promise<string | null> {
   const cookieStore = await cookies();
   return (
     cookieStore.get(isRefresh ? REFRESH_TOKEN_STORAGE_KEY : TOKEN_STORAGE_KEY)
@@ -65,20 +80,21 @@ export async function clearTokenOnServer(): Promise<void> {
   cookieStore.delete(REFRESH_TOKEN_STORAGE_KEY);
 }
 
-export async function getTokensOnServer(): Promise<{ token: string | null; refreshToken: string | null }> {
+export async function getTokensOnServer(): Promise<{
+  token: string | null;
+  refreshToken: string | null;
+}> {
   return {
     token: await getTokenOnServer(),
     refreshToken: await getRefreshTokenOnServer(),
   };
 }
 
-export async function isTokenValidOnServer(token: string|null): Promise<boolean> {
+export async function isTokenValidOnServer(
+  token: string | null,
+): Promise<boolean> {
   if (!token) return false;
 
-  try {
-    const payload = jwtDecode<JwtPayload>(token);
-    return payload.exp * 1000 >= Date.now();
-  } catch {
-    return false;
-  }
+  const payload = jwtDecode<JwtPayload>(token);
+  return !(payload.exp * 1000 >= Date.now());
 }

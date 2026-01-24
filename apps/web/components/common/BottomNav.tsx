@@ -1,26 +1,54 @@
 "use client";
+
 import React from "react";
 import useTranslation from "@/hooks/useTranslation";
 import Link from "next/link";
 import { PAGE_LINKS } from "@/constant/page.links";
+import { usePathname } from "next/navigation";
 
 const BottomNav = () => {
-  const { t } = useTranslation()
-  const Item = ({ label, icon, href }: { label: string; icon: React.ReactNode; href: string }) => (
-    <Link href={href} className="flex flex-col items-center justify-center gap-1 font-medium text-xs">
-      <span className="h-10 w-10 rounded-xl bg-white dark:bg-gray-800 shadow-md border border-gray-100 dark:border-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-300">
-        {icon}
-      </span>
-      <span className="text-gray-700 dark:text-gray-300">{t(label)}</span>
-    </Link>
-  );
+  const { t } = useTranslation();
+  const pathname = usePathname();
+
+  const Item = ({
+    label,
+    icon,
+    href,
+  }: {
+    label: string;
+    icon: React.ReactNode;
+    href: string;
+  }) => {
+    const isActive = pathname.includes(href);
+    let spanClassName =
+      "h-10 w-10 rounded-xl bg-white dark:bg-gray-800 shadow-md border border-gray-100 dark:border-gray-700 flex items-center justify-center text-gray-700 dark:text-gray-300";
+    let labelClassName = "text-gray-700 dark:text-gray-300";
+
+    if (isActive) {
+      spanClassName +=
+        " border-secondary-800 border-2 text-secondary-800 dark:text-secondary-800 dark:border-secondary-800";
+      labelClassName = " text-secondary-800 dark:text-secondary-800";
+    } else {
+      spanClassName += " border-0";
+    }
+
+    return (
+      <Link
+        href={href}
+        className="flex flex-col items-center justify-center gap-1 font-medium text-xs"
+      >
+        <span className={spanClassName}>{icon}</span>
+        <span className={labelClassName}>{t(label)}</span>
+      </Link>
+    );
+  };
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-20 border-t border-gray-200 dark:border-gray-700 bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg">
       <div className="mx-auto sm:max-w-3xl px-4 py-2 grid grid-cols-5 gap-2">
         <Item
           label="HOME"
-          href="/dashboard"
+          href={PAGE_LINKS.DASHBOARD}
           icon={
             <svg
               width="20"
@@ -39,7 +67,7 @@ const BottomNav = () => {
         />
         <Item
           label="MAP"
-          href="/map"
+          href={PAGE_LINKS.MAP}
           icon={
             <svg
               width="20"
@@ -59,7 +87,7 @@ const BottomNav = () => {
         />
         <div className="flex items-center justify-center">
           <Link
-            href="/post"
+            href={PAGE_LINKS.POST}
             aria-label="ADD"
             className="h-14 w-14 -mt-6 rounded-full bg-gradient-to-br from-secondary-500 to-secondary-600 dark:from-secondary-600 dark:to-secondary-700 text-white shadow-lg hover:shadow-xl flex items-center justify-center transition-all transform hover:scale-105"
           >
@@ -80,7 +108,7 @@ const BottomNav = () => {
         </div>
         <Item
           label="CHAT"
-          href="/chat"
+          href={PAGE_LINKS.CHAT}
           icon={
             <svg
               width="20"

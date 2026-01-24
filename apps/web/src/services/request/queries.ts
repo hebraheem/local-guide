@@ -1,3 +1,5 @@
+"use client";
+
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { requestService, type RequestItem } from "./service";
 import { requestKeys } from "./keys";

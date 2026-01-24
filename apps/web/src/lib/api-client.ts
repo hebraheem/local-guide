@@ -1,9 +1,5 @@
-
 import axios, { AxiosInstance, AxiosError } from "axios";
 import { config } from "@/config/app";
-import { clearTokenOnServer, getTokenOnServer } from "@/lib/jwt.server";
-
-const AUTH_TOKEN_KEY = "authToken";
 
 interface ApiErrorResponse {
   statusCode: number;
@@ -23,8 +19,8 @@ class ApiClient {
       },
     });
 
-    getTokenOnServer().then((token) => {
-      this.setupInterceptors(token);
+    axios.get("/api/auth/token").then((res) => {
+      this.setupInterceptors(res.data.token);
     });
   }
 
@@ -43,41 +39,16 @@ class ApiClient {
       (response) => response,
       (error: AxiosError<ApiErrorResponse>) => {
         if (error.response?.status === 401) {
-          this.handleUnauthorized();
+          axios.post("/api/auth/refresh").then((res: any) => {
+            if (!res.ok) {
+              console.log("error", error);
+            }
+          });
         }
         return Promise.reject(error);
       },
     );
   }
-
-  // private getAuthToken(): string | null {
-  //   if (typeof window !== "undefined") {
-  //     return localStorage.getItem(AUTH_TOKEN_KEY);
-  //   }
-  //   return null;
-  // }
-
-  private handleUnauthorized(): void {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem(AUTH_TOKEN_KEY);
-      window.dispatchEvent(new CustomEvent("unauthorized"));
-    }
-    clearTokenOnServer().then(r => {
-       console.log("Cleared server tokens", r);
-    });
-  }
-
-  // public setAuthToken(token: string): void {
-  //   if (typeof window !== "undefined") {
-  //     localStorage.setItem(AUTH_TOKEN_KEY, token);
-  //   }
-  // }
-  //
-  // public clearAuthToken(): void {
-  //   if (typeof window !== "undefined") {
-  //     localStorage.removeItem(AUTH_TOKEN_KEY);
-  //   }
-  // }
 
   public getClient(): AxiosInstance {
     return this.instance;

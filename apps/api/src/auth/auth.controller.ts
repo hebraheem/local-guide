@@ -78,7 +78,7 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
-  @Post('refresh-token')
+  @Post('route.ts')
   @HttpCode(HttpStatus.OK)
   @ApiBearerAuth('bearer')
   @ApiOperation({

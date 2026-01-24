@@ -17,7 +17,6 @@ export const authService = {
   logout: async (): Promise<void> => {
     await api.post("/auth/logout", {});
   },
-
   refreshToken: async (refreshToken: string): Promise<AuthTokens> => {
     const { data } = await api.post<AuthTokens>("/auth/refresh-token", {
       refreshToken,

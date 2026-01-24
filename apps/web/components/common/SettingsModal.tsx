@@ -4,8 +4,8 @@ import React, { useState, useTransition } from "react";
 import useTranslation from "@/hooks/useTranslation";
 import Link from "next/link";
 import { PAGE_LINKS } from "@/constant/page.links";
-import { clearToken } from "@/lib/jwt";
 import { useRouter } from "next/navigation";
+import axios from "axios";
 
 type Props = {
   isOpen: boolean;
@@ -345,8 +345,11 @@ export default function SettingsModal({
             {/* Logout Button */}
             <button
               onClick={() => {
-                clearToken();
-                router.push(PAGE_LINKS.LOGIN);
+                axios.post("/api/auth/logout").then((response: any) => {
+                  if (response.data.ok) {
+                    router.push(PAGE_LINKS.LOGIN);
+                  }
+                });
               }}
               className="w-full py-3 px-4 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30 text-red-600 dark:text-red-400 font-semibold rounded-xl transition-colors"
             >

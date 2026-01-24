@@ -6,9 +6,10 @@ import { PAGE_LINKS } from "@/constant/page.links";
 import {  setTokensOnServer } from "@/lib/jwt.server";
 
 const testToken =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYTA3Nzc2Ni0xNGIyLTRiNjQtOThlNy03Mzg5MDI1NDIyMTgiLCJ1c2VybmFtZSI6ImpvaG5fZG9lIiwicm9sZXMiOlsiUkVRVUVTVEVSIiwiSEVMUEVSIl0sImlhdCI6MTc2OTE5NDY5MCwiZXhwIjoxNzY5MTk4MjkwfQ.oC2uYHtZEnGwdyS2bWRDlQS32PdTqiYFZ5h0ejVCH3M";
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYTA3Nzc2Ni0xNGIyLTRiNjQtOThlNy03Mzg5MDI1NDIyMTgiLCJ1c2VybmFtZSI6ImpvaG5fZG9lIiwicm9sZXMiOlsiUkVRVUVTVEVSIiwiSEVMUEVSIl0sImlhdCI6MTc2OTIxMzM1OSwiZXhwIjoxNzY5MjE2OTU5fQ.Q2ZkemB9Ryl8hZTwz9MT91g7jLEM8_XfbASyOhmPdPk";
 
-const testRefreshToken = "";
+const testRefreshToken =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYTA3Nzc2Ni0xNGIyLTRiNjQtOThlNy03Mzg5MDI1NDIyMTgiLCJ1c2VybmFtZSI6ImpvaG5fZG9lIiwicm9sZXMiOlsiUkVRVUVTVEVSIiwiSEVMUEVSIl0sImlhdCI6MTc2OTIxMzM1OSwiZXhwIjoxNzY5NDcyNTU5fQ.0xtnMT3C3nPJuOvqqcnyRryJIdKXWED-joWEY3zNnrM";
 
 export type LoginTypes = {
   email: string;
