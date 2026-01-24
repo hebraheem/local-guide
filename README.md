@@ -16,9 +16,9 @@ This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
+- `api`: another [Nest.js](https://nestjs.com/) app
 - `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
+- `@repo/ui`: a stub React component library shared by both `web` and `api` applications
 - `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
 - `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
@@ -26,7 +26,7 @@ Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
 
 ### Utilities
 
-This Turborepo has some additional tools already setup for you:
+This Turborepo has some additional tools already set up for you:
 
 - [TypeScript](https://www.typescriptlang.org/) for static type checking
 - [ESLint](https://eslint.org/) for code linting
@@ -154,23 +154,12 @@ cd apps/api
 npm install
 ```
 
-### Step 2: Setup PostgreSQL
+### Step 2: Set up PostgreSQL
 
 Make sure PostgreSQL is running locally or remote. Update `.env.local` with connection string.
 
-### Step 3: Generate Prisma Client
 
-```bash
-npx prisma generate
-```
-
-### Step 4: Run Migrations
-
-```bash
-npm run migrate:dev
-```
-
-### Step 5: Start Dev Server
+### Step 3: Start Dev Server
 
 ```bash
 npm run dev
