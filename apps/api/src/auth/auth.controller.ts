@@ -10,7 +10,6 @@ import { AuthService } from './auth.service';
 import { RegisterAuthDto, LoginAuthDto, RefreshTokenDto } from './dto/auth.dto';
 import { TokenResponse } from './interfaces/jwt-payload.interface';
 import { PublicUrl } from 'src/common/decorators/public.decorator';
-import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 
 @ApiTags('Authentication')
 @Controller('auth')
@@ -78,8 +77,9 @@ export class AuthController {
     return this.authService.login(loginDto);
   }
 
-  @Post('route.ts')
+  @Post('refresh-token')
   @HttpCode(HttpStatus.OK)
+  @PublicUrl()
   @ApiBearerAuth('bearer')
   @ApiOperation({
     summary: 'Refresh access token',
@@ -103,14 +103,8 @@ export class AuthController {
     description: 'Internal server error',
   })
   async refreshToken(
-    @CurrentUser('sub') userId: string,
     @Body('refreshToken') refreshTokenDto: RefreshTokenDto,
   ): Promise<TokenResponse> {
-    const token = await Promise.resolve(refreshTokenDto.refreshToken);
-
-    return {
-      accessToken: token,
-    } as TokenResponse;
-    // return this.authService.refreshToken(refreshToken);
+    return await this.authService.refreshTokens(refreshTokenDto);
   }
 }

@@ -91,9 +91,6 @@ export class User {
   @JoinColumn()
   tenant: Tenant;
 
-  @Column({ unique: true })
-  tenantId: string;
-
   @DeleteDateColumn({ nullable: true })
   deletedAt?: Date;
 }

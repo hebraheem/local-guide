@@ -10,7 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcryptjs';
 import { User, Role, Tenant } from '../database/entities';
-import { RegisterAuthDto, LoginAuthDto } from './dto/auth.dto';
+import { RegisterAuthDto, LoginAuthDto, RefreshTokenDto } from './dto/auth.dto';
 import { JwtPayload, TokenResponse } from './interfaces/jwt-payload.interface';
 
 @Injectable()
@@ -87,6 +87,35 @@ export class AuthService {
 
     this.logger.log(`User logged in: ${user.id}`);
     return this.generateTokens(user.id, user.username, user.roles);
+  }
+
+  async refreshTokens(refreshToken: RefreshTokenDto): Promise<TokenResponse> {
+    const { refreshToken: token } = refreshToken;
+    let payload: JwtPayload;
+
+    try {
+      payload = this.jwtService.verify<JwtPayload>(token, {
+        secret: this.configService.get('auth.jwtRefreshSecret'),
+      });
+
+      const now = Math.floor(Date.now() / 1000);
+      if (payload.exp && payload.exp < now) {
+        throw new BadRequestException('Refresh token has expired');
+      }
+    } catch (error) {
+      throw new BadRequestException(error, 'Invalid refresh token');
+    }
+
+    const user = await this.userRepository.findOne({
+      where: { id: payload.sub },
+    });
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    const { id: userId, username, roles } = user;
+    return this.generateTokens(userId, username, roles);
   }
 
   private async hashPassword(password: string): Promise<string> {
