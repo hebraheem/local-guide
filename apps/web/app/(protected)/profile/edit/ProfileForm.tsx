@@ -2,7 +2,7 @@
 import { useActionState, useState } from "react";
 import Input from "@/forms/Input";
 import Textarea from "@/forms/Textarea";
-import { submitProfileUpdate } from "@/server/action";
+import { submitProfileUpdate } from "@/actions/auth.action";
 import { useEffect } from "react";
 import useTranslation from "@/hooks/useTranslation";
 

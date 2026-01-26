@@ -1,7 +1,7 @@
 import React, { Suspense, use } from "react";
 import { getServerAuthUser } from "@/lib/jwt.server";
 import { PAGE_LINKS } from "@/constant/page.links";
-import { redirect } from "next/navigation";
+import { redirect, RedirectType } from "next/navigation";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -17,7 +17,7 @@ const PrivateLayout = ({
   const { isAuthenticated } = use(getServerAuthUser());
 
   if (!isAuthenticated) {
-    redirect(PAGE_LINKS.LOGIN);
+    redirect(PAGE_LINKS.LOGIN, RedirectType.push);
   }
 
   return (

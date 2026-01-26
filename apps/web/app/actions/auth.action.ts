@@ -1,98 +1,69 @@
 "use server";
 
 import { RequestFormTypes } from "@/types/request.types";
-import { redirect } from "next/navigation";
-import { PAGE_LINKS } from "@/constant/page.links";
-import {  setTokensOnServer } from "@/lib/jwt.server";
+import { setTokensOnServer } from "@/lib/jwt.server";
+import { authService } from "@/services";
+import { safeAction } from "@/lib/response-handler";
+import { ResponseType } from "@/types/api";
+import { AuthTokens } from "@/types/user";
 
-const testToken =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYTA3Nzc2Ni0xNGIyLTRiNjQtOThlNy03Mzg5MDI1NDIyMTgiLCJ1c2VybmFtZSI6ImpvaG5fZG9lIiwicm9sZXMiOlsiUkVRVUVTVEVSIiwiSEVMUEVSIl0sImlhdCI6MTc2OTIxMzM1OSwiZXhwIjoxNzY5MjE2OTU5fQ.Q2ZkemB9Ryl8hZTwz9MT91g7jLEM8_XfbASyOhmPdPk";
+export const submitLoginForm = safeAction(
+  async (_prev: ResponseType<AuthTokens>, payload: FormData) => {
+    const email = payload.get("email") as string;
+    const password = payload.get("password") as string;
 
-const testRefreshToken =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlYTA3Nzc2Ni0xNGIyLTRiNjQtOThlNy03Mzg5MDI1NDIyMTgiLCJ1c2VybmFtZSI6ImpvaG5fZG9lIiwicm9sZXMiOlsiUkVRVUVTVEVSIiwiSEVMUEVSIl0sImlhdCI6MTc2OTIxMzM1OSwiZXhwIjoxNzY5NDcyNTU5fQ.0xtnMT3C3nPJuOvqqcnyRryJIdKXWED-joWEY3zNnrM";
-
-export type LoginTypes = {
-  email: string;
-  password: string;
-};
-
-export type SignUpTypes = {
-  username: string;
-} & LoginTypes;
-
-export type ResetPasswordTypes = Omit<LoginTypes, "password"> & {
-  success?: boolean;
-};
-export type UpdatePasswordType = Omit<LoginTypes, "email"> & {
-  success?: boolean;
-};
-
-export async function submitLoginForm(
-  _prevState: LoginTypes,
-  formData: FormData,
-) {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const success = true;
-
-  if (success) {
-    await setTokensOnServer({ token: testToken, refreshToken: testRefreshToken });
-
-    redirect(PAGE_LINKS.DASHBOARD);
-  }
-  return {
-    success: true,
-    email,
-    password,
-  };
-}
-
-export async function submitSignUpForm(
-  _prevState: SignUpTypes,
-  formData: FormData,
-) {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const username = formData.get("username") as string;
-  const success = true;
-  if (success) {
-    await setTokensOnServer({
-      token: testToken,
-      refreshToken: testRefreshToken,
+    return authService.login({
+      email,
+      username: email,
+      password,
     });
-    redirect(PAGE_LINKS.DASHBOARD);
-  }
-  return {
-    success: true,
-    email,
-    password,
-    username,
-  };
-}
+  },
+  async (data) => {
+    const { refreshToken, accessToken } = data;
+    await setTokensOnServer({
+      token: accessToken,
+      refreshToken: refreshToken as string,
+    });
+  },
+);
 
-export async function submitRequestPassword(
-  _prevState: ResetPasswordTypes,
-  formData: FormData,
-) {
-  const email = formData.get("email") as string;
+export const submitSignUpForm = safeAction(
+  async (_prevState: ResponseType<AuthTokens>, formData: FormData) => {
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    const username = formData.get("username") as string;
 
-  return {
-    success: true,
-    email,
-  };
-}
+    return await authService.register({
+      email,
+      username,
+      password,
+    });
+  },
+  async (data) => {
+    const { refreshToken, accessToken } = data;
+    await setTokensOnServer({
+      token: accessToken,
+      refreshToken: refreshToken as string,
+    });
+  },
+);
 
-export async function submitUpdatePassword(
-  _prevState: UpdatePasswordType,
-  formData: FormData,
-) {
-  const password = formData.get("password") as string;
+export const submitRequestPassword = safeAction(
+  async (_prevState: ResponseType<never>, formData: FormData) => {
+    const email = formData.get("email") as string;
 
-  return {
-    success: true,
-    password,
-  };
-}
+    return await authService.requestPasswordReset(email);
+  },
+);
+
+export const submitUpdatePassword = safeAction(
+  async (_prevState: ResponseType<never>, formData: FormData) => {
+    const newPassword = formData.get("password") as string;
+    const token = formData.get("token") as string;
+
+    return await authService.resetPassword(token, newPassword);
+  },
+);
 
 export type ProfileUpdateTypes = {
   success?: boolean;

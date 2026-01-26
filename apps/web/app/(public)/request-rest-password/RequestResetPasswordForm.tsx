@@ -1,13 +1,16 @@
 "use client";
 
 import React, { useActionState } from "react";
-import { ResetPasswordTypes, submitRequestPassword } from "@/server/action";
+import {  submitRequestPassword } from "@/actions/auth.action";
 import Input from "@/forms/Input";
 import { Button } from "@/ui/button";
 import useTranslation from "@/hooks/useTranslation";
+import { ResponseWrapper } from "@/types/api";
 
-const initialState: ResetPasswordTypes = {
-  email: "",
+const initialState: ResponseWrapper<never> = {
+  fields: { email: "" },
+  success: false,
+  error: null,
 };
 
 const RequestPassword = () => {
@@ -22,7 +25,7 @@ const RequestPassword = () => {
         type="email"
         name="email"
         label="LOGIN_EMAIL"
-        defaultValue={state.email}
+        defaultValue={state.fields.email}
         placeholder="john.doe@example.com"
         required
       />

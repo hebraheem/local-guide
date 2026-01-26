@@ -1,11 +1,7 @@
 import axios, { AxiosInstance, AxiosError } from "axios";
 import { config } from "@/config/app";
-
-interface ApiErrorResponse {
-  statusCode: number;
-  message: string;
-  error?: string;
-}
+import { normalizeAxiosError } from "@/utils/normalize.error";
+import { ApiError } from "@/types/api";
 
 class ApiClient {
   private readonly instance: AxiosInstance;
@@ -19,7 +15,7 @@ class ApiClient {
       },
     });
 
-    axios.get("/api/auth/token").then((res) => {
+    axios.get(config.api.URL+"/api/auth/token").then((res) => {
       this.setupInterceptors(res.data.token);
     });
   }
@@ -37,15 +33,15 @@ class ApiClient {
 
     this.instance.interceptors.response.use(
       (response) => response,
-      (error: AxiosError<ApiErrorResponse>) => {
-        if (error.response?.status === 401) {
-          axios.post("/api/auth/refresh").then((res: any) => {
-            if (!res.ok) {
+      (error: AxiosError<ApiError>) => {
+        if ((error.response?.status || error.status) === 401) {
+          axios.post(config.api.URL + "/api/auth/refresh").then((res: any) => {
+            if (!res.data?.accessToken) {
               console.log("error", error);
             }
           });
         }
-        return Promise.reject(error);
+        return Promise.reject(normalizeAxiosError(error));
       },
     );
   }

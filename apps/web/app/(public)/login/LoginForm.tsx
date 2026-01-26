@@ -1,31 +1,53 @@
 "use client";
 
-import React, { useActionState } from "react";
-import { LoginTypes, submitLoginForm } from "@/server/action";
+import React, { useActionState, useEffect } from "react";
+import { submitLoginForm } from "@/actions/auth.action";
 import Input from "@/forms/Input";
 import { Button } from "@/ui/button";
 import useTranslation from "@/hooks/useTranslation";
 import Link from "next/link";
 import { PAGE_LINKS } from "@/constant/page.links";
+import { toast } from "react-toastify";
+import { AuthTokens } from "@/types/user";
+import { ResponseWrapper } from "@/types/api";
+import { useRouter } from "next/navigation";
 
-const initialState: LoginTypes = {
-  email: "",
-  password: "",
+const initialState: ResponseWrapper<AuthTokens> = {
+  fields: { email: "", password: "" },
+  success: false,
+  error: undefined,
 };
 
 const LoginForm = () => {
+  const { t } = useTranslation();
+  const router = useRouter();
   const [state, formAction, isPending] = useActionState(
     submitLoginForm,
     initialState,
   );
-  const { t } = useTranslation();
+
+  useEffect(
+    () => {
+      if (state.error) {
+        toast.error(state.error.message);
+      }
+
+      if (state.success) {
+        toast.success(t("LOGIN_SUCCESS"));
+        router.push(PAGE_LINKS.DASHBOARD);
+      }
+    },
+    // eslint-disable-next-line
+    [state.error, state.success],
+  );
+
   return (
     <form className="w-full space-y-1" action={formAction}>
       <Input
         type="email"
         name="email"
         label="LOGIN_EMAIL"
-        defaultValue={state.email}
+        defaultValue={state.fields.email}
         placeholder="john.doe@example.com"
         required
       />
@@ -34,12 +56,12 @@ const LoginForm = () => {
         label="LOGIN_PASSWORD"
         name="password"
         placeholder="**********"
-        defaultValue={state.password}
+        defaultValue={state.fields.password}
         required
       />
       <div className="flex justify-end pt-2 pb-4">
-        <Link 
-          href={PAGE_LINKS.REQUEST_RESET_PASSWORD} 
+        <Link
+          href={PAGE_LINKS.REQUEST_RESET_PASSWORD}
           className="text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300 transition-colors"
         >
           {t("FORGOT_PASSWORD")}

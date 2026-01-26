@@ -1,13 +1,15 @@
 "use client";
 import { useActionState } from "react";
 import Input from "@/forms/Input";
-import { submitUpdatePassword } from "@/server/action";
+import { submitUpdatePassword } from "@/actions/auth.action";
 import { useEffect } from "react";
 import useTranslation from "@/hooks/useTranslation";
+import { ResponseWrapper } from "@/types/api";
 
-const initialState = { 
+const initialState: ResponseWrapper<never> = {
   success: false,
-  password: "" 
+  error: null,
+  fields: { password: "", currentPassword: "" },
 };
 
 export default function PasswordForm() {

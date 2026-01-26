@@ -1,15 +1,17 @@
 "use client";
 
 import React, { useActionState } from "react";
-import {  SignUpTypes, submitSignUpForm } from "@/server/action";
+import { submitSignUpForm } from "@/actions/auth.action";
 import Input from "@/forms/Input";
 import { Button } from "@/ui/button";
 import useTranslation from "@/hooks/useTranslation";
+import { ResponseWrapper } from "@/types/api";
+import { AuthTokens } from "@/types/user";
 
-const initialState: SignUpTypes = {
-  email: "",
-  password: "",
-  username: "",
+const initialState: ResponseWrapper<AuthTokens> = {
+  fields: { email: "", password: "", username: "" },
+  success: false,
+  error: null,
 };
 
 const SignUpForm = () => {
@@ -18,13 +20,14 @@ const SignUpForm = () => {
     initialState,
   );
   const { t } = useTranslation();
+
   return (
     <form className="w-full space-y-1" action={formAction}>
       <Input
         type="email"
         name="email"
         label="LOGIN_EMAIL"
-        defaultValue={state.email}
+        defaultValue={state.fields.email}
         placeholder="john.doe@example.com"
         required
       />
@@ -32,7 +35,7 @@ const SignUpForm = () => {
         type="text"
         name="username"
         label="USERNAME"
-        defaultValue={state.username}
+        defaultValue={state.fields.username}
         placeholder="johndoe"
         required
       />
@@ -41,7 +44,7 @@ const SignUpForm = () => {
         label="LOGIN_PASSWORD"
         name="password"
         placeholder="**********"
-        defaultValue={state.password}
+        defaultValue={state.fields.password}
         required
       />
       <Button

@@ -4,7 +4,7 @@ import Input from "@/forms/Input";
 import Textarea from "@/forms/Textarea";
 import Select from "@/forms/Select";
 import LocationAutocomplete, { PlaceDetails } from "@/forms/LocationAutocomplete";
-import { submitRequest } from "@/server/action";
+import { submitRequest } from "@/actions/auth.action";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import useTranslation from "@/hooks/useTranslation";
