@@ -2,11 +2,11 @@ import type { Metadata, Viewport } from "next";
 import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
-import { QueryProvider } from "@/context/query-provider";
 import { getLocale } from "@/src/lib/i18n/detect";
 import { getTheme } from "@/src/lib/theme/detect";
 import React from "react";
 import { ROOT_LAYOUT_HEADER_HEIGHT } from "@/constant/variables";
+import { ToastContainer } from "react-toastify";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -102,10 +102,9 @@ export default async function RootLayout({
         suppressHydrationWarning
         style={{ "--header-h": `${ROOT_LAYOUT_HEADER_HEIGHT}px` } as any}
       >
-        <QueryProvider>
-          <main>{children}</main>
-          {/*<PWAInstaller />*/}
-        </QueryProvider>
+        <main>{children}</main>
+        {/*<PWAInstaller />*/}
+        <ToastContainer />
       </body>
     </html>
   );
