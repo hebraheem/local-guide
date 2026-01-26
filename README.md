@@ -349,7 +349,7 @@ LOG_LEVEL=info
 
 ```bash
 # Development
-npm run dev                    # Start dev server with watch
+npm run dev                    # Start dev actions with watch
 
 # Production
 npm run build                  # Build for production
