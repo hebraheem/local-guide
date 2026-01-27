@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsRelations, ILike, Repository } from 'typeorm';
+import { FindOptionsRelations, ILike, Not, Repository, IsNull } from 'typeorm';
 import { User, Profile, Role, LocationEntity } from '../database/entities';
 import {
   SearchAndFilterDto,
@@ -59,26 +59,56 @@ export class UsersService {
     const paginateQuery = new PaginateQuery<User, UserResponseDto>(
       this.userRepository,
       query,
-      where,
+      { ...where, deletedAt: Not(IsNull()) },
       this.mapUserToResponse.bind(this) as (entity: User) => UserResponseDto,
       {},
-      ['profile', 'location'] as FindOptionsRelations<User>,
+      ['profile', 'location', 'profile.address'] as FindOptionsRelations<User>,
     );
 
     return paginateQuery.paginate();
   }
 
   async findById(id: string): Promise<UserResponseDto> {
-    const user = await this.userRepository.findOne({
-      where: { id },
-      relations: ['profile', 'location'],
-    });
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.profile', 'profile')
+      .leftJoinAndSelect('profile.address', 'address')
+      .leftJoinAndSelect('user.location', 'location')
+
+      // Count requests by status
+      .addSelect(
+        `(SELECT COUNT(*) FROM requests r 
+        WHERE r."requestById" = user.id 
+        AND r.status = 'CANCELLED')`,
+        'totalCancelledRequests',
+      )
+      .addSelect(
+        `(SELECT COUNT(*) FROM requests r 
+        WHERE r."requestById" = user.id 
+        AND r.status = 'COMPLETED')`,
+        'totalCompletedRequests',
+      )
+      .addSelect(
+        `(SELECT COUNT(*) FROM requests r 
+        WHERE r."requestById" = user.id 
+        AND r.status != 'COMPLETED')`,
+        'totalOnGoingRequests',
+      )
+      .where('user.id = :id', { id })
+      .andWhere('"user"."deletedAt" IS NULL')
+      .getRawAndEntities<User>();
 
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
+    const raw = user.raw[0];
 
-    return this.mapUserToResponse(user);
+    return this.mapUserToResponse({
+      ...user.entities[0],
+      totalCompletedRequests: +raw.totalCompletedRequests,
+      totalOnGoingRequests: +raw.totalOnGoingRequests,
+      totalCancelledRequests: +raw.totalCancelledRequests,
+    });
   }
 
   async findUserByLocation(
@@ -92,6 +122,7 @@ export class UsersService {
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.location', 'location')
       .leftJoinAndSelect('user.profile', 'profile')
+      .leftJoinAndSelect('user.profile.address', 'address')
       .where(
         `
       (
@@ -191,45 +222,6 @@ export class UsersService {
             }
           : user.profile?.address,
       } as unknown as Profile;
-
-      // let profile = await this.profileRepository.findOne({
-      //   where: { id: user.profile?.id },
-      // });
-      //
-      // if (!profile) {
-      //   profile = this.profileRepository.create();
-      // }
-      // profile.firstName = updateUserDto.profile.firstName ?? profile.firstName;
-      // profile.lastName = updateUserDto.profile.lastName ?? profile.lastName;
-      // profile.bio = updateUserDto.profile.bio ?? profile.bio;
-      // profile.avatarUrl = updateUserDto.profile.avatarUrl ?? profile.avatarUrl;
-      // profile.phone = updateUserDto.profile.phone ?? profile.phone;
-      // profile.languages = updateUserDto.profile.languages ?? profile.languages;
-      // profile.avatarUrl = updateUserDto.profile.avatarUrl ?? profile.avatarUrl;
-      // profile.user = user;
-      //
-      // if (updateUserDto.profile.address) {
-      //   if (!profile.address) {
-      //     profile.address = {} as AddressDto;
-      //   }
-      //   profile.address.street =
-      //     updateUserDto.profile.address.street ?? profile.address.street;
-      //   profile.address.city =
-      //     updateUserDto.profile.address.city ?? profile.address.city;
-      //   profile.address.state =
-      //     updateUserDto.profile.address.state ?? profile.address.state;
-      //   profile.address.zipCode =
-      //     updateUserDto.profile.address.zipCode ?? profile.address.zipCode;
-      //   profile.address.country =
-      //     updateUserDto.profile.address.country ?? profile.address.country;
-      //   profile.address.latitude =
-      //     updateUserDto.profile.address.latitude ?? profile.address.latitude;
-      //   profile.address.longitude =
-      //     updateUserDto.profile.address.longitude ?? profile.address.longitude;
-      //   profile.address.number =
-      //     updateUserDto.profile.address.number ?? profile.address.number;
-      // }
-      // user.profile = await this.profileRepository.save(profile);
     }
 
     const updatedUser = await this.userRepository.save(user);
@@ -263,6 +255,9 @@ export class UsersService {
     profile.address.latitude = user.profile?.address?.latitude;
     profile.address.longitude = user.profile?.address?.longitude;
     profile.address.number = user.profile?.address?.number ?? '';
+    profile.skills = user.profile?.skills ?? [];
+    console.log('user', user);
+
     return {
       id: user.id,
       username: user.username,
@@ -278,6 +273,9 @@ export class UsersService {
       deletedAt: user.deletedAt,
       location: user.location,
       lastLogin: user.lastLogin,
+      totalCancelledRequests: user['totalCancelledRequests'] ?? 0,
+      totalCompletedRequests: user['totalCompletedRequests'] ?? 0,
+      totalOnGoingRequests: user['totalOnGoingRequests'] ?? 0,
       profile,
     };
   }

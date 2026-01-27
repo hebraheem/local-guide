@@ -7,7 +7,7 @@ import {
   OneToOne,
   JoinColumn,
 } from 'typeorm';
-import { User } from './user.entity';
+import { Role, User } from './user.entity';
 import { Address } from './address.entity';
 
 enum Proficiency {
@@ -39,6 +39,12 @@ export class Profile {
 
   @Column({ type: 'text', nullable: true })
   avatarUrl?: string;
+
+  @Column({
+    type: 'simple-array',
+    default: [],
+  })
+  skills: string[];
 
   @CreateDateColumn()
   createdAt: Date;

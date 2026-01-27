@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsArray,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -44,6 +45,16 @@ export class ProfileDto {
   @IsOptional()
   @MaxLength(500)
   bio?: string;
+
+  @ApiProperty({
+    description: 'User skills',
+    example: ['plumbing', 'carpentry'],
+    isArray: true,
+    required: false,
+  })
+  @IsArray()
+  @IsOptional()
+  skills?: string[];
 
   @ApiProperty({
     description: 'Profile picture URL',

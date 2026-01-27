@@ -159,6 +159,24 @@ export class UserResponseDto {
     example: '2026-01-20T08:30:00Z',
   })
   lastLogin: Date;
+
+  @ApiProperty({
+    description: 'Total cancelled requests by the user',
+    example: 3,
+  })
+  totalCancelledRequests?: number;
+
+  @ApiProperty({
+    description: 'Total ongoing requests by the user',
+    example: 3,
+  })
+  totalOnGoingRequests?: number;
+
+  @ApiProperty({
+    description: 'Total completed requests by the user',
+    example: 3,
+  })
+  totalCompletedRequests?: number;
 }
 
 export class SearchAndFilterDto {

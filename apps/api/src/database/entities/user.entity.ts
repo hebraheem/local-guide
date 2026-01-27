@@ -1,17 +1,17 @@
 import {
-  Entity,
-  PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
-  UpdateDateColumn,
-  OneToOne,
-  OneToMany,
+  DeleteDateColumn,
+  Entity,
   JoinColumn,
   ManyToOne,
-  DeleteDateColumn,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { Profile } from './profile.entity';
-import { Request } from './request.entity';
+import { Request, RequestStatus } from './request.entity';
 import { Rating } from './rating.entity';
 import { LocationEntity } from './location.entity';
 import { Tenant } from './tenant.entity';
@@ -93,4 +93,30 @@ export class User {
 
   @DeleteDateColumn({ nullable: true })
   deletedAt?: Date;
+
+  get totalCompletedRequests(): number {
+    return (
+      this.requestsAccepted?.filter(
+        (req) => req.status === RequestStatus.COMPLETED,
+      ).length ?? 0
+    );
+  }
+
+  get totalOnGoingRequests(): number {
+    return (
+      this.requestsAccepted?.filter(
+        (req) =>
+          req.status !== RequestStatus.COMPLETED &&
+          req.status !== RequestStatus.CANCELLED,
+      ).length ?? 0
+    );
+  }
+
+  get totalCancelledRequests(): number {
+    return (
+      this.requestsAccepted?.filter(
+        (req) => req.status === RequestStatus.CANCELLED,
+      ).length ?? 0
+    );
+  }
 }

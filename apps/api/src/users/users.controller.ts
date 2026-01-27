@@ -8,7 +8,6 @@ import {
   HttpCode,
   HttpStatus,
   Query,
-  ParseIntPipe,
 } from '@nestjs/common';
 import {
   ApiTags,
@@ -141,6 +140,31 @@ export class UsersController {
   ): Promise<ListResponseDto<UserResponseDto>> {
     console.log('location', location);
     return this.usersService.findUserByLocation(query, location);
+  }
+
+  @Get('me')
+  @ApiOperation({
+    summary: 'Get current user',
+    description: 'Retrieve the currently authenticated user.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Current user details',
+    type: UserResponseDto,
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized',
+  })
+  async getCurrentUser(
+    @CurrentUser('sub') userId: string,
+  ): Promise<ResponseDto<UserResponseDto>> {
+    const user = await this.usersService.findById(userId);
+    return {
+      success: true,
+      message: 'Current user retrieved successfully',
+      data: user,
+    };
   }
 
   @Get(':id')
