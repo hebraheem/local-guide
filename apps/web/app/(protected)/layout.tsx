@@ -3,6 +3,8 @@ import { getServerAuthUser } from "@/lib/jwt.server";
 import { PAGE_LINKS } from "@/constant/page.links";
 import { redirect, RedirectType } from "next/navigation";
 import { Metadata } from "next";
+import { cookies } from "next/headers";
+
 
 export const metadata: Metadata = {
   title: "Welcome to Your Local Guide",
@@ -14,6 +16,8 @@ const PrivateLayout = ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
+  use(cookies());
+
   const { isAuthenticated } = use(getServerAuthUser());
 
   if (!isAuthenticated) {

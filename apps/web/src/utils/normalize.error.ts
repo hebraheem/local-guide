@@ -7,7 +7,6 @@ export interface NormalizedApiError extends AxiosError {
 
 export function normalizeAxiosError(error: unknown): NormalizedApiError {
   if (axios.isAxiosError(error)) {
-    console.log("error", error);
 
     const message =
       error.response?.data?.message ||

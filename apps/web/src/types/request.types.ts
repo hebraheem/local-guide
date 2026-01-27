@@ -1,3 +1,5 @@
+import { ResponseWrapper } from "@/types/api";
+
 export type RequestInitialStateType = {
   success: boolean;
   title: string;
@@ -14,20 +16,23 @@ export type RequestInitialStateType = {
   country: string;
 };
 
-export const initialRequestFormState: RequestInitialStateType = {
+export const initialRequestFormState: ResponseWrapper<RequestType> = {
   success: false,
-  title: "",
-  description: "",
-  mode: "",
-  category: "",
-  deadline: "",
-  amount: "",
-  currency: "",
-  city: "",
-  street: "",
-  state: "",
-  zipCode: "",
-  country: "",
+  error:null,
+  fields: {
+    title: "",
+    description: "",
+    mode: "",
+    category: "",
+    deadline: "",
+    amount: "",
+    currency: "",
+    city: "",
+    street: "",
+    state: "",
+    zipCode: "",
+    country: "",
+  },
 };
 
 export type CreateRequestTypes = {
@@ -61,4 +66,12 @@ export type RequestFormTypes =  RequestInitialStateType &{
   requirements?: string[];
   latitude?: string;
   longitude?: string;
+};
+
+export type RequestType = CreateRequestTypes & {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  status: "OPEN" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED";
+  requesterId: string;
 };

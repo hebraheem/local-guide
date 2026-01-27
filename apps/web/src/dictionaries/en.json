@@ -276,5 +276,11 @@
   "Requester": "Requester",
   "SKILLS": "Skills",
   "ADD_SKILL_PLACEHOLDER": "Type a skill and press Enter or click Add",
+  "LANGUAGES": "Languages",
+  "ADD_LANGUAGE_PLACEHOLDER": "Type a language and press Enter or click Add",
+  "BASIC": "Basic",
+  "CONVERSATIONAL": "Conversational",
+  "FLUENT": "Fluent",
+  "NATIVE": "Native",
   "ADD": "Add"
 }

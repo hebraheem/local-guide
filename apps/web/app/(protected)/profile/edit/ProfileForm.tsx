@@ -2,73 +2,77 @@
 import { useActionState, useState } from "react";
 import Input from "@/forms/Input";
 import Textarea from "@/forms/Textarea";
-import { submitProfileUpdate } from "@/actions/auth.action";
+import TagInput from "@/forms/TagInput";
+import LanguageInput, { Language } from "@/forms/LanguageInput";
+import { submitProfileUpdate } from "@/actions/user.action";
 import { useEffect } from "react";
 import useTranslation from "@/hooks/useTranslation";
+import { ResponseWrapper } from "@/types/api";
+import { User } from "@/types/user";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
+import { PAGE_LINKS } from "@/constant/page.links";
 
-const initialState = {
+const initialState: ResponseWrapper<Partial<User>> = {
   success: false,
-  username: "",
-  email: "",
-  firstName: "",
-  lastName: "",
-  bio: "",
-  phone: "",
-  street: "",
-  city: "",
-  state: "",
-  zipCode: "",
-  country: "",
-  roles: [],
-  skills: [],
+  error: null,
+  fields: {
+    username: "",
+    email: "",
+    firstName: "",
+    lastName: "",
+    bio: "",
+    phone: "",
+    street: "",
+    city: "",
+    state: "",
+    zipCode: "",
+    country: "",
+    roles: [],
+    skills: [],
+    languages: [],
+  },
 };
 
-export default function ProfileForm({ profile }: { profile?: any }) {
+const availableRoles = [
+  { value: "HELPER", label: "Helper" },
+  { value: "REQUESTER", label: "Requester" },
+];
+
+export default function ProfileForm({ user }: { user?: User }) {
   const { t } = useTranslation();
-  const [selectedRoles, setSelectedRoles] = useState<string[]>(profile?.roles || []);
-  const [skills, setSkills] = useState<string[]>(profile?.skills || []);
-  const [newSkill, setNewSkill] = useState("");
-  
+  const router = useRouter();
+  const [selectedRoles, setSelectedRoles] = useState<string[]>(
+    user?.roles || [],
+  );
+  const [skills, setSkills] = useState<string[]>(user?.profile?.skills || []);
+  const [languages, setLanguages] = useState<Language[]>(
+    user?.profile?.languages || [],
+  );
+
   const [state, formAction, isPending] = useActionState(
     submitProfileUpdate,
-    initialState
+    initialState,
   );
 
   useEffect(() => {
     if (state.success) {
-      console.log("Profile updated successfully", state);
+      toast.success("Profile updated successfully");
+      router.push(PAGE_LINKS.PROFILE)
+
     }
-  }, [state]);
+    if(state.error){
+      toast.error(state.error.message);
+    }
+  },
+    // eslint-disable-next-line
+    [state.success, state.error]);
 
-  const availableRoles = [
-    { value: "HELPER", label: "Helper" },
-    { value: "REQUESTER", label: "Requester" },
-  ];
-
+  const profile = user?.profile;
   const toggleRole = (role: string) => {
-    setSelectedRoles(prev => 
-      prev.includes(role) 
-        ? prev.filter(r => r !== role)
-        : [...prev, role]
+    setSelectedRoles((prev) =>
+      prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role],
     );
-  };
-
-  const addSkill = () => {
-    if (newSkill.trim() && !skills.includes(newSkill.trim())) {
-      setSkills([...skills, newSkill.trim()]);
-      setNewSkill("");
-    }
-  };
-
-  const removeSkill = (skillToRemove: string) => {
-    setSkills(skills.filter(skill => skill !== skillToRemove));
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addSkill();
-    }
   };
 
   return (
@@ -78,14 +82,14 @@ export default function ProfileForm({ profile }: { profile?: any }) {
           label="USERNAME"
           name="username"
           type="text"
-          defaultValue={profile?.username}
+          defaultValue={user?.username}
           required
         />
         <Input
           label="EMAIL"
           name="email"
           type="email"
-          defaultValue={profile?.email}
+          defaultValue={user?.email}
           required
         />
       </div>
@@ -205,51 +209,21 @@ export default function ProfileForm({ profile }: { profile?: any }) {
         ))}
       </div>
 
-      {/* Skills Section */}
-      <div className="flex flex-col gap-2 w-full py-4">
-        <label className="text-sm font-medium text-gray-700 dark:text-gray-300">
-          {t("SKILLS")}
-        </label>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={newSkill}
-            onChange={(e) => setNewSkill(e.target.value)}
-            onKeyPress={handleKeyPress}
-            className="dark:text-primary-800 flex-1 focus:outline-1 focus:border-primary-200 rounded-xl bg-primary-100 outline-none px-4 py-3 text-sm"
-            placeholder={t("ADD_SKILL_PLACEHOLDER")}
-          />
-          <button
-            type="button"
-            onClick={addSkill}
-            className="px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white font-semibold rounded-xl transition-all"
-          >
-            {t("ADD")}
-          </button>
-        </div>
-        <div className="flex flex-wrap gap-2 mt-2">
-          {skills.map((skill, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-2 px-3 py-2 bg-primary-100 dark:bg-primary-800 rounded-lg"
-            >
-              <span className="text-sm text-gray-700 dark:text-gray-300">{skill}</span>
-              <button
-                type="button"
-                onClick={() => removeSkill(skill)}
-                className="text-red-600 hover:text-red-800 font-bold text-lg leading-none"
-              >
-                ×
-              </button>
-            </div>
-          ))}
-        </div>
-        {/* Hidden inputs for form submission */}
-        {skills.map((skill, index) => (
-          <input key={index} type="hidden" name="skills[]" value={skill} />
-        ))}
-      </div>
+      <TagInput
+        label="SKILLS"
+        name="skills"
+        placeholder="ADD_SKILL_PLACEHOLDER"
+        values={skills}
+        onValuesChange={setSkills}
+      />
 
+      <LanguageInput
+        label="LANGUAGES"
+        name="languages"
+        placeholder="ADD_LANGUAGE_PLACEHOLDER"
+        values={languages}
+        onValuesChange={setLanguages}
+      />
       <div className="pt-6">
         <button
           type="submit"

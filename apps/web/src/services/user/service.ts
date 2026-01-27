@@ -1,5 +1,6 @@
 import { api } from "@/lib/api-client";
-import type { User, UserProfile } from "@/types/user";
+import type { User } from "@/types/user";
+import { AxiosResponse } from "axios";
 
 export const userService = {
   getAll: async (): Promise<User[]> => {
@@ -14,16 +15,16 @@ export const userService = {
     const { data } = await api.post<User>("/users", payload);
     return data;
   },
-  update: async (id: string, payload: Partial<User>): Promise<User> => {
-    const { data } = await api.patch<User>(`/users/${id}`, payload);
+  update: async (payload: Partial<User>): Promise<User> => {
+    const { data } = await api.patch<User>(`/users/me`, payload);
     return data;
   },
-  updateProfile: async (id: string, profile: Partial<UserProfile>): Promise<User> => {
-    const { data } = await api.patch<User>(`/users/${id}/profile`, profile);
+  currentUser: async (): Promise<AxiosResponse<User>> => {
+    const { data } = await api.get<AxiosResponse<User>>(`/users/me`);
     return data;
   },
   delete: async (id: string): Promise<void> => {
-    await api.delete(`/users/${id}`);
+    await api.patch(`/users/${id}`);
   },
 };
 

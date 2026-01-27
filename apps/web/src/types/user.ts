@@ -1,15 +1,43 @@
+import { Language } from "@/forms/LanguageInput";
+
 export interface User {
   id: string;
   username: string;
   email: string;
-  firstName?: string;
-  lastName?: string;
-  bio?: string;
-  phone?: string;
-  avatarUrl?: string;
+  totalHelped: number;
   roles: UserRole;
+  isVerified: boolean;
+  isActive: boolean;
+  avgRating?: number;
+  reviews: number; //{}[];
+  location?: {
+    latitude?: number;
+    longitude?: number;
+  };
+  profile: {
+    firstName?: string;
+    lastName?: string;
+    bio?: string;
+    phone?: string;
+    avatarUrl?: string;
+    languages?: Language[];
+    skills?: string[];
+    address?: {
+      street?: string;
+      city?: string;
+      state?: string;
+      zipCode?: string;
+      country?: string;
+      number?: string;
+      longitude?: number;
+      latitude?: number;
+    };
+  };
   createdAt: Date;
   updatedAt: Date;
+  totalCompletedRequests?: number;
+  totalCancelledRequests?: number;
+  totalOnGoingRequests?: number;
 }
 
 export interface AuthTokens {
@@ -32,6 +60,6 @@ export interface UserProfile {
   avatarUrl: string;
 }
 
-export type Role = "REQUESTER" | "HELPER" ;
+export type Role = "REQUESTER" | "HELPER";
 
-export type UserRole = Role[]
+export type UserRole = Role[];

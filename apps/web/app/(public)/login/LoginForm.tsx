@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 const initialState: ResponseWrapper<AuthTokens> = {
   fields: { email: "", password: "" },
   success: false,
-  error: undefined,
+  error: null,
 };
 
 const LoginForm = () => {

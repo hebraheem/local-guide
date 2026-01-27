@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
+import { PAGE_LINKS } from "@/constant/page.links";
 
 export default function GlobalError({
   error,
@@ -79,7 +80,7 @@ export default function GlobalError({
                 </button>
                 
                 <Link
-                  href="/"
+                  href={PAGE_LINKS.DASHBOARD}
                   className="px-8 py-4 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-900 dark:text-white font-bold rounded-xl border-2 border-gray-200 dark:border-gray-600 hover:border-primary-500 dark:hover:border-primary-400 transition-all"
                 >
                   Go to Home

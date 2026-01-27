@@ -2,6 +2,7 @@ import axios, { AxiosInstance, AxiosError } from "axios";
 import { config } from "@/config/app";
 import { normalizeAxiosError } from "@/utils/normalize.error";
 import { ApiError } from "@/types/api";
+import { getTokenOnServer, getTokensOnServer } from "@/lib/jwt.server";
 
 class ApiClient {
   private readonly instance: AxiosInstance;
@@ -15,14 +16,14 @@ class ApiClient {
       },
     });
 
-    axios.get(config.api.URL+"/api/auth/token").then((res) => {
-      this.setupInterceptors(res.data.token);
-    });
+    this.setupInterceptors();
   }
 
-  private setupInterceptors(token: string | null): void {
+  setupInterceptors(): void {
+    // Request interceptor - fetch token on EACH request
     this.instance.interceptors.request.use(
-      (config) => {
+      async (config) => {
+        const token = await getTokenOnServer();
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -35,10 +36,15 @@ class ApiClient {
       (response) => response,
       (error: AxiosError<ApiError>) => {
         if ((error.response?.status || error.status) === 401) {
-          axios.post(config.api.URL + "/api/auth/refresh").then((res: any) => {
-            if (!res.data?.accessToken) {
-              console.log("error", error);
-            }
+          getTokensOnServer().then((tokens) => {
+            fetch("/api/auth/refresh", {
+              method: "POST",
+              body: JSON.stringify({ refreshToken: tokens.refreshToken }),
+            }).then((res) => {
+              if (!res.json()) {
+                console.log("error", error);
+              }
+            });
           });
         }
         return Promise.reject(normalizeAxiosError(error));

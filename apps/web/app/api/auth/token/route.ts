@@ -4,5 +4,5 @@ import { NextResponse } from "next/server";
 export async function GET() {
   const tokens = await getTokensOnServer();
 
-  return NextResponse.json({ tokens });
+  return NextResponse.json(tokens);
 }

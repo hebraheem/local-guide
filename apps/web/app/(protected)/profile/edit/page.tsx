@@ -4,26 +4,14 @@ import Link from "next/link";
 import BottomNav from "@/common/BottomNav";
 import ProfileForm from "./ProfileForm";
 import PasswordForm from "./PasswordForm";
+import { getCurrentUser } from "@/actions/user.action";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function ProfileEditPage() {
   const { t } = await initTranslations();
-
-  // Mock profile data - replace with real data
-  const profile = {
-    username: "jane_doe",
-    email: "jane@example.com",
-    firstName: "John",
-    lastName: "Doe",
-    bio: "A short bio about John Doe.",
-    phone: "+1234567890",
-    address: {
-      street: "123 Main St",
-      city: "Springfield",
-      state: "IL",
-      zipCode: "62704",
-      country: "USA",
-    },
-  };
+  const userData = (await getCurrentUser())?.data
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pb-20">
@@ -66,7 +54,7 @@ export default async function ProfileEditPage() {
               </p>
             </div>
           </div>
-          <ProfileForm profile={profile} />
+          <ProfileForm user={userData} />
         </div>
 
         {/* Password Section */}

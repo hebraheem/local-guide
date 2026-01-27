@@ -27,9 +27,10 @@ export async function getServerAuthUser(): Promise<MinimalAuthUser> {
 
   try {
     const payload = jwtDecode<JwtPayload>(token);
-    const expired = await isTokenValidOnServer(token);
 
-    if (expired) return { isAuthenticated: false, user: null };
+    const isValid = await isTokenValidOnServer(token);
+
+    if (!isValid) return { isAuthenticated: false, user: null };
 
     return { isAuthenticated: true, user: payload };
   } catch {
@@ -94,7 +95,6 @@ export async function isTokenValidOnServer(
   token: string | null,
 ): Promise<boolean> {
   if (!token) return false;
-
   const payload = jwtDecode<JwtPayload>(token);
-  return !(payload.exp * 1000 >= Date.now());
+  return payload.exp * 1000 > Date.now(); // still valid
 }
