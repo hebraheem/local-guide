@@ -19,6 +19,13 @@ export const userService = {
     const { data } = await api.patch<User>(`/users/me`, payload);
     return data;
   },
+  updateLocation: async (location: {
+    latitude: number;
+    longitude: number;
+  }): Promise<User> => {
+    const { data } = await api.patch<User>(`/users/me`, { location });
+    return data;
+  },
   currentUser: async (): Promise<AxiosResponse<User>> => {
     const { data } = await api.get<AxiosResponse<User>>(`/users/me`);
     return data;

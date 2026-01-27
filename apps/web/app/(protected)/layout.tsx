@@ -4,6 +4,7 @@ import { PAGE_LINKS } from "@/constant/page.links";
 import { redirect, RedirectType } from "next/navigation";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
+import LocationTracker from "@/components/common/LocationTracker";
 
 
 export const metadata: Metadata = {
@@ -29,6 +30,7 @@ const PrivateLayout = ({
       <div className="min-h-dvh bg-brand-bg text-brand-text dark:bg-brand-bg-dark dark:text-brand-text-dark">
         <main>{children}</main>
       </div>
+      <LocationTracker autoStart updateInterval={60 * 60 * 2 * 1000} showUI={true} />
     </Suspense>
   );
 };
