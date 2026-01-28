@@ -88,8 +88,9 @@ export class UsersController {
   })
   async findAll(
     @Query() query: ListRequestDto & SearchAndFilterDto,
+    @CurrentUser('sub') userId: string,
   ): Promise<ListResponseDto<UserResponseDto>> {
-    return this.usersService.findAll(query);
+    return this.usersService.findAll(query, userId);
   }
 
   @Get('location/:latitude/:longitude/:radiusInKm')

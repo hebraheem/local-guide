@@ -28,6 +28,7 @@ export class UsersService {
 
   async findAll(
     query: ListRequestDto & SearchAndFilterDto,
+    userId: string,
   ): Promise<ListResponseDto<UserResponseDto>> {
     const { search } = query;
     const where = search
@@ -56,10 +57,12 @@ export class UsersService {
         where['isVerified'] = query.isVerified;
       }
     }
+    console.log('userId', userId);
+
     const paginateQuery = new PaginateQuery<User, UserResponseDto>(
       this.userRepository,
       query,
-      { ...where, deletedAt: Not(IsNull()) },
+      { ...where, deletedAt: IsNull(), id: Not(userId) },
       this.mapUserToResponse.bind(this) as (entity: User) => UserResponseDto,
       {},
       ['profile', 'location', 'profile.address'] as FindOptionsRelations<User>,
@@ -256,7 +259,6 @@ export class UsersService {
     profile.address.longitude = user.profile?.address?.longitude;
     profile.address.number = user.profile?.address?.number ?? '';
     profile.skills = user.profile?.skills ?? [];
-    console.log('user', user);
 
     return {
       id: user.id,
