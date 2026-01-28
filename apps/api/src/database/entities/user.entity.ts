@@ -42,8 +42,10 @@ export class User {
   isActive: boolean;
 
   @Column({
-    type: 'simple-array',
+    type: 'enum',
     default: [Role.REQUESTER],
+    enum: Role,
+    array: true,
   })
   roles: Role[];
 

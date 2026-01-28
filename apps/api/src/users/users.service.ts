@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsRelations, ILike, Not, Repository, IsNull } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User, Profile, Role, LocationEntity } from '../database/entities';
 import {
   SearchAndFilterDto,
@@ -13,7 +13,7 @@ import {
   ListRequestDto,
   ListResponseDto,
 } from 'src/common/classes/pagination/pagination.dto';
-import { PaginateQuery } from 'src/common/classes/pagination/paginate.class';
+import { QueryBuilderPaginator } from 'src/common/classes/pagination/paginate.class';
 import { LocationParamDto } from './dto/location.dto';
 import { EARTH_RADIUS_IN_KM } from '../common/constants/utils';
 
@@ -30,45 +30,42 @@ export class UsersService {
     query: ListRequestDto & SearchAndFilterDto,
     userId: string,
   ): Promise<ListResponseDto<UserResponseDto>> {
-    const { search } = query;
-    const where = search
-      ? [
-          { username: ILike(`%${search}%`) },
-          { email: ILike(`%${search}%`) },
-          { profile: { firstName: ILike(`%${search}%`) } },
-          { profile: { lastName: ILike(`%${search}%`) } },
-        ]
-      : {};
-    if (query.role) {
-      if (Array.isArray(where)) {
-        where.forEach((condition) => {
-          condition['roles'] = ILike(`%${query.role}%`);
-        });
-      } else {
-        where['roles'] = ILike(`%${query.role}%`);
-      }
-    }
-    if (typeof query.isVerified === 'boolean') {
-      if (Array.isArray(where)) {
-        where.forEach((condition) => {
-          condition['isVerified'] = query.isVerified;
-        });
-      } else {
-        where['isVerified'] = query.isVerified;
-      }
-    }
-    console.log('userId', userId);
+    const { search, role, isVerified } = query;
 
-    const paginateQuery = new PaginateQuery<User, UserResponseDto>(
-      this.userRepository,
+    const qb = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.profile', 'profile')
+      .leftJoinAndSelect('profile.address', 'address')
+      .leftJoinAndSelect('user.location', 'location')
+      .where('user.deletedAt IS NULL')
+      .andWhere('user.id != :userId', { userId });
+
+    if (search) {
+      qb.andWhere(
+        `(
+        user.username ILIKE :search
+        OR user.email ILIKE :search
+        OR profile.firstName ILIKE :search
+        OR profile.lastName ILIKE :search
+      )`,
+        { search: `%${search}%` },
+      );
+    }
+
+    if (role) {
+      qb.andWhere(':role = ANY(user.roles)', { role });
+    }
+
+    if (typeof isVerified === 'boolean') {
+      qb.andWhere('user.isVerified = :isVerified', { isVerified });
+    }
+
+    return new QueryBuilderPaginator<User, UserResponseDto>(
+      qb,
       query,
-      { ...where, deletedAt: IsNull(), id: Not(userId) },
-      this.mapUserToResponse.bind(this) as (entity: User) => UserResponseDto,
-      {},
-      ['profile', 'location', 'profile.address'] as FindOptionsRelations<User>,
-    );
-
-    return paginateQuery.paginate();
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+      this.mapUserToResponse.bind(this),
+    ).paginate();
   }
 
   async findById(id: string): Promise<UserResponseDto> {
