@@ -6,9 +6,9 @@ import Select from "@/forms/Select";
 import LocationAutocomplete, { PlaceDetails } from "@/forms/LocationAutocomplete";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import useTranslation from "@/hooks/useTranslation";
 import { initialRequestFormState, UpdateRequestType } from "@/types/request.types";
 import { submitRequest } from "@/actions/request.action";
+import { useTranslations } from "next-intl";
 
 
 
@@ -19,7 +19,7 @@ interface RequestFormProps {
 
 export default function RequestForm({ request, isEdit = false }: RequestFormProps) {
   const router = useRouter();
-  const { t } = useTranslation();
+  const t = useTranslations();
   const [selectedMode, setSelectedMode] = useState(request?.mode || "FREE");
   const [locationDetails, setLocationDetails] = useState<PlaceDetails | null>(
     request?.location ? {

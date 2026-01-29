@@ -1,6 +1,6 @@
 "use client";
 import { Activity, useState } from "react";
-import useTranslation from "@/hooks/useTranslation";
+import { useTranslations } from "next-intl";
 
 interface TagInputProps {
   label: string;
@@ -19,7 +19,7 @@ export default function TagInput({
   onValuesChange,
   addButtonLabel = "ADD",
 }: TagInputProps) {
-  const { t } = useTranslation();
+  const  t  = useTranslations();
   const [inputValue, setInputValue] = useState("");
 
   values = values.filter(val => val !== "[]")

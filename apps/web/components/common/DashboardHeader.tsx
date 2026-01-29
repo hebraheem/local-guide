@@ -6,17 +6,15 @@ import React, { useEffect, useState } from "react";
 import home from "@/public/svg/home_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg";
 import SettingsModal from "@/common/SettingsModal";
 import useCurrentUser from "@/hooks/useCurrentUser";
-import { DEFAULT_AVATAR_URL } from "api/dist/src/common/constants/utils";
+import { DEFAULT_AVATAR_URL } from "@/constant/variables";
 
 type Props = {
   userName?: string;
   userAvatar?: string;
-  currentLocale: string;
   currentTheme: "light" | "dark";
 };
 
 export default function DashboardHeader({
-  currentLocale,
   currentTheme,
 }: Props) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -86,7 +84,6 @@ export default function DashboardHeader({
       <SettingsModal
         isOpen={isSettingsOpen}
         onCloseAction={() => setIsSettingsOpen(false)}
-        currentLocale={currentLocale}
         currentTheme={currentTheme}
       />
     </>

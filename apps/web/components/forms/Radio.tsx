@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import useTranslation from "@/hooks/useTranslation";
+import { useTranslations } from "next-intl";
 
 interface RadioProps {
   label: string;
@@ -22,7 +22,7 @@ const Radio = ({
   "type"
 > &
   RadioProps) => {
-  const { t } = useTranslation();
+  const  t  = useTranslations();
 
   return (
     <div className="flex flex-col gap-2 w-full py-4">

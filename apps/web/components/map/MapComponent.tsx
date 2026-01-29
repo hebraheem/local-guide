@@ -4,7 +4,7 @@ import React, { useState, useCallback } from "react";
 import { GoogleMap, Marker, InfoWindow } from "@react-google-maps/api";
 import { useGoogleMaps } from "@/lib/google-maps/loader";
 import Link from "next/link";
-import useTranslation from "@/hooks/useTranslation";
+import { useTranslations } from "next-intl";
 
 type RequestLocation = {
   id: number;
@@ -37,7 +37,7 @@ const defaultCenter = {
 };
 
 export default function MapComponent({ requests, center = defaultCenter }: MapComponentProps) {
-  const { t } = useTranslation();
+  const  t  = useTranslations();
   const [selectedRequest, setSelectedRequest] = useState<RequestLocation | null>(null);
   const [, setMap] = useState<google.maps.Map | null>(null);
 

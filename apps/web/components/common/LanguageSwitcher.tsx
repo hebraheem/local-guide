@@ -1,30 +1,20 @@
 "use client";
 
-import React, { useState, startTransition } from "react";
+import React from "react";
+import { useLocale } from "next-intl";
+import { usePathname, useRouter as userLocaleRouter } from "next/navigation";
 
-type Props = {
-  currentLocale: string;
-};
+const supportedLanguages = ["en", "de", "fr"] as const;
 
-const LanguageSwitcher = ({ currentLocale }: Props) => {
-  const [value, setValue] = useState(currentLocale);
-  const supportedLanguages = ["en", "de", "fr"] as const;
+const LanguageSwitcher = () => {
+  const locale = useLocale();
+  const pathname = usePathname();
+  const localeRouter = userLocaleRouter();
+
   const onChange = (value: "en" | "de" | "fr") => {
-    setValue(value);
-    startTransition(async () => {
-      try {
-        await fetch("/api/lang", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ lng: value }),
-          cache: "no-store",
-        });
-        // Reload to re-render server components with the new cookie
-        window.location.reload();
-      } catch (e) {
-        console.error("Failed to switch language", e);
-      }
-    });
+    const segments = pathname.split("/");
+    segments[1] = value; // replace locale
+    localeRouter.push(segments.join("/"));
   };
 
   return (
@@ -35,7 +25,7 @@ const LanguageSwitcher = ({ currentLocale }: Props) => {
             role="button"
             key={lang}
             onClick={() => onChange(lang)}
-            className={`${value === lang ? "hidden" : "hover:underline"} text-primary-950 dark:text-primary-200 uppercase font-semi-bold pr-2 cursor-pointer`}
+            className={`${locale === lang ? "hidden" : "hover:underline"} text-primary-950 dark:text-primary-200 uppercase font-semi-bold pr-2 cursor-pointer`}
           >
             {lang}
           </span>

@@ -1,7 +1,7 @@
 "use client";
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { useGoogleMaps } from "@/lib/google-maps/loader";
-import useTranslation from "@/hooks/useTranslation";
+import { useTranslations } from "next-intl";
 
 interface LocationAutocompleteProps {
   onPlaceSelected: (place: PlaceDetails) => void;
@@ -20,7 +20,7 @@ export interface PlaceDetails {
 }
 
 const LocationAutocomplete = ({ onPlaceSelected, defaultValue }: LocationAutocompleteProps) => {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const autocompleteRef = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState(defaultValue || "");
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";

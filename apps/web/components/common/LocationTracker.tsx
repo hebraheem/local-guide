@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useLocationTracker } from "@/hooks/useLocationTracker";
-import useTranslation from "@/hooks/useTranslation";
+import { useTranslations } from "next-intl";
 
 interface LocationTrackerProps {
   autoStart?: boolean;
@@ -15,7 +15,7 @@ export default function LocationTracker({
   updateInterval = 30000,
   showUI = true,
 }: LocationTrackerProps) {
-  const { t } = useTranslation();
+  const t  = useTranslations();
   const [enabled, setEnabled] = useState(autoStart);
   const [lastUpdate, setLastUpdate] = useState<Date | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);

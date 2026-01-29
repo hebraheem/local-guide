@@ -1,6 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
-import useTranslation from "@/hooks/useTranslation";
+import { useTranslations } from "next-intl";
 
 interface SelectProps {
   label: string;
@@ -22,7 +22,7 @@ const Select = ({
   const [, force] = useState(0);
   const [error, setError] = useState(false);
   const visited = useRef(false);
-  const { t } = useTranslation();
+  const  t  = useTranslations();
   className +=
     " dark:text-primary-800 w-full focus:outline-1 focus:border-primary-200 rounded-xl bg-primary-100 outline-none px-4 py-4 text-sm";
 

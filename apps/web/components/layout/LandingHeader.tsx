@@ -1,16 +1,13 @@
-import { getLocale } from "@/src/lib/i18n/detect";
-import initTranslations from "@/src/lib/i18n/server";
 import LandingHeaderClient from "./LandingHeaderClient";
 import { getTheme } from "@/lib/theme/detect";
+import { getTranslations } from "next-intl/server";
 
 const LandingHeader = async () => {
-  const locale = await getLocale();
-  const theme = await getTheme()
-  const { t } = await initTranslations();
+  const theme = await getTheme();
+  const t = await getTranslations();
 
   return (
     <LandingHeaderClient
-      locale={locale}
       theme={theme}
       translations={{
         howItWorks: t("HOW_IT_WORKS"),

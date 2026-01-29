@@ -2,11 +2,11 @@
 
 import React from "react";
 import { useRouter } from "next/navigation";
-import useTranslation from "@/hooks/useTranslation";
+import { useTranslations } from "next-intl";
 
 const GoBack = ({ title }: { title: string }) => {
   const router = useRouter();
-  const { t } = useTranslation();
+  const  t  = useTranslations();
   return (
     <div className="mx-auto max-w-4xl px-4 py-3 flex items-center gap-3">
       <button

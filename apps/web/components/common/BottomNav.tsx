@@ -1,13 +1,13 @@
 "use client";
 
 import React from "react";
-import useTranslation from "@/hooks/useTranslation";
 import Link from "next/link";
 import { PAGE_LINKS } from "@/constant/page.links";
 import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const BottomNav = () => {
-  const { t } = useTranslation();
+  const  t  = useTranslations();
   const pathname = usePathname();
 
   const Item = ({

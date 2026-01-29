@@ -1,48 +1,43 @@
 "use client";
 
 import React, { useState, useTransition } from "react";
-import useTranslation from "@/hooks/useTranslation";
 import Link from "next/link";
 import { PAGE_LINKS } from "@/constant/page.links";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import axios from "axios";
+import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 
 type Props = {
   isOpen: boolean;
   onCloseAction: () => void;
-  currentLocale: string;
   currentTheme: "light" | "dark";
 };
+
+const SUPPORTED_LOCALES = {
+  en: "English",
+  de: "Deutsch",
+  fr: "Français",
+} as const;
 
 export default function SettingsModal({
   isOpen,
   onCloseAction,
-  currentLocale,
   currentTheme,
 }: Props) {
-  const { t } = useTranslation();
+  const t = useTranslations();
   const router = useRouter();
-  const [locale, setLocale] = useState(currentLocale);
   const [theme, setTheme] = useState<"light" | "dark">(currentTheme);
   const [pending, startTransition] = useTransition();
+  const locale = useLocale();
+  const pathname = usePathname();
 
   if (!isOpen) return null;
 
-  const handleLanguageChange = (newLocale: "en" | "de" | "fr") => {
-    setLocale(newLocale);
-    startTransition(async () => {
-      try {
-        await fetch("/api/lang", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ lng: newLocale }),
-          cache: "no-store",
-        });
-        window.location.reload();
-      } catch (e) {
-        console.error("Failed to switch language", e);
-      }
-    });
+  const handleLanguageChange = (newLocale: string) => {
+    const segments = pathname.split("/");
+    segments[1] = newLocale; // replace locale
+    router.push(segments.join("/"));
   };
 
   const handleThemeChange = (newTheme: "light" | "dark") => {
@@ -119,39 +114,21 @@ export default function SettingsModal({
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => handleLanguageChange("en")}
-                    disabled={pending}
-                    className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
-                      locale === "en"
-                        ? "bg-primary-600 text-white shadow-md"
-                        : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
-                    }`}
-                  >
-                    English
-                  </button>
-                  <button
-                    onClick={() => handleLanguageChange("de")}
-                    disabled={pending}
-                    className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
-                      locale === "de"
-                        ? "bg-primary-600 text-white shadow-md"
-                        : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
-                    }`}
-                  >
-                    Deutsch
-                  </button>
-                  <button
-                    onClick={() => handleLanguageChange("fr")}
-                    disabled={pending}
-                    className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
-                      locale === "fr"
-                        ? "bg-primary-600 text-white shadow-md"
-                        : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
-                    }`}
-                  >
-                    Français
-                  </button>
+                  {Object.entries(SUPPORTED_LOCALES).map(([code, name]) => {
+                    return (
+                      <button
+                        onClick={() => handleLanguageChange(code)}
+                        disabled={pending}
+                        className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
+                          locale === code
+                            ? "bg-primary-600 text-white shadow-md"
+                            : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
+                        }`}
+                      >
+                        {name}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 

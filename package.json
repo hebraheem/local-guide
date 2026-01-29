@@ -22,6 +22,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "next-intl": "^4.8.0",
     "react-toastify": "^11.0.5"
   }
 }

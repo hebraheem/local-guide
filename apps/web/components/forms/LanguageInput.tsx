@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import useTranslation from "@/hooks/useTranslation";
+import { useTranslations } from "next-intl";
 
 export enum Proficiency {
   BASIC = "BASIC",
@@ -31,7 +31,7 @@ export default function LanguageInput({
   onValuesChange,
   addButtonLabel = "ADD",
 }: LanguageInputProps) {
-  const { t } = useTranslation();
+  const t  = useTranslations();
   const [languageName, setLanguageName] = useState("");
   const [proficiency, setProficiency] = useState<Proficiency>(
     Proficiency.FLUENT

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher";
-import { getLocale } from "@/src/lib/i18n/detect";
 import React from "react";
 
 import home from '@/public/svg/home_24dp_E3E3E3_FILL0_wght400_GRAD0_opsz24.svg'
@@ -29,7 +28,6 @@ export default async function AppHeader({
   rightIcons = [],
   showLanguage = false,
 }: Partial<Props>) {
-  const locale = await getLocale();
 
   return (
     <header className="sticky top-0 z-30 bg-primary-600 text-white shadow">
@@ -89,7 +87,7 @@ export default async function AppHeader({
         </div>
 
         <div className="ml-auto flex items-center gap-2">
-          {showLanguage && <LanguageSwitcher currentLocale={locale} />}
+          {showLanguage && <LanguageSwitcher />}
           {rightIcons?.map((it, idx) =>
             it.href ? (
               <Link

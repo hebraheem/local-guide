@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 import withPWA from 'next-pwa';
 
+import createNextIntlPlugin from 'next-intl/plugin';
+
 const nextConfig = {
   turbopack: {},
   images: {
@@ -26,4 +28,11 @@ const pwaConfig = {
   disable: process.env.NODE_ENV === 'development',
 };
 
-export default withPWA(pwaConfig)(nextConfig);
+const withNextIntl = createNextIntlPlugin();
+export default withNextIntl(withPWA(pwaConfig)(nextConfig));
+
+
+
+
+
+//export default withNextIntl(nextConfig);

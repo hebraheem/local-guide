@@ -7,7 +7,6 @@ import ThemeSwitcher from "@/common/ThemeSwitcher";
 import { Theme } from "@/lib/theme/detect";
 
 type Props = {
-  locale: string;
   theme: Theme;
   translations: {
     howItWorks: string;
@@ -18,7 +17,7 @@ type Props = {
   };
 };
 
-const LandingHeaderClient = ({ locale, translations, theme }: Props) => {
+const LandingHeaderClient = ({  translations, theme }: Props) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const inPageNavigate = (id: string) => {
@@ -61,7 +60,7 @@ const LandingHeaderClient = ({ locale, translations, theme }: Props) => {
           <div className="hidden md:flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
               <ThemeSwitcher currentTheme={theme} />
-              <LanguageSwitcher currentLocale={locale} />
+              <LanguageSwitcher />
             </div>
 
             <Link
@@ -143,7 +142,7 @@ const LandingHeaderClient = ({ locale, translations, theme }: Props) => {
                 {translations.about}
               </div>
               <div className="flex items-center gap-2 text-sm">
-                <LanguageSwitcher currentLocale={locale} />
+                <LanguageSwitcher  />
               </div>
               <Link
                 href="/login"
