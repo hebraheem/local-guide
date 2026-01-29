@@ -117,6 +117,7 @@ export default function SettingsModal({
                   {Object.entries(SUPPORTED_LOCALES).map(([code, name]) => {
                     return (
                       <button
+                        key={code}
                         onClick={() => handleLanguageChange(code)}
                         disabled={pending}
                         className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
