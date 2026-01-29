@@ -1,13 +1,11 @@
 import DashboardHeader from "@/common/DashboardHeader";
 import React from "react";
-import { getTheme } from "@/lib/theme/detect";
 import Link from "next/link";
 import ChatSearchBar from "@/[locale]/(protected)/chat/ChatSearchBar";
 import { getTranslations } from "next-intl/server";
 
 export default async function ChatPage() {
   const t = await getTranslations();
-  const theme = await getTheme();
 
   // Mock chat data - replace with real data
   const conversations = [
@@ -72,7 +70,7 @@ export default async function ChatPage() {
       {/* Header */}
       <DashboardHeader
         userName="User"
-        currentTheme={theme}
+        
       />
 
       {/* Main Content */}

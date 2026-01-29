@@ -1,6 +1,5 @@
 import DashboardHeader from "@/common/DashboardHeader";
 import React from "react";
-import { getTheme } from "@/lib/theme/detect";
 import Link from "next/link";
 import { getCurrentUser } from "@/actions/user.action";
 import { toast } from "react-toastify";
@@ -12,7 +11,6 @@ export const revalidate = 0;
 
 export default async function ProfilePage() {
   const t = await getTranslations();
-  const theme = await getTheme();
 
   const user = (await getCurrentUser()).data;
 
@@ -48,7 +46,7 @@ export default async function ProfilePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pb-20">
       {/* Header */}
-      <DashboardHeader currentTheme={theme} />
+      <DashboardHeader  />
 
       {/* Main Content */}
       <main className="mx-auto max-w-4xl px-4 py-6 space-y-6">

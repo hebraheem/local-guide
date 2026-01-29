@@ -2,11 +2,11 @@ import type { Metadata, Viewport } from "next";
 import { Montserrat } from "next/font/google";
 import localFont from "next/font/local";
 import "../globals.css";
-import { getTheme } from "@/lib/theme/detect";
 import React from "react";
 import { ROOT_LAYOUT_HEADER_HEIGHT } from "@/constant/variables";
 import { ToastContainer } from "react-toastify";
 import ReactQueryProvider from "@/providers/ReactQueryProvider";
+import { ThemeProvider } from "@/providers/ThemeProvider";
 import { hasLocale, NextIntlClientProvider } from "next-intl";
 import { routing } from "@/i18n/routing";
 import { notFound } from "next/navigation";
@@ -97,12 +97,9 @@ export default async function RootLayout({
     notFound();
   }
 
-  const theme = await getTheme();
-
   return (
     <html
       lang={locale}
-      className={theme === "dark" ? "dark" : undefined}
       suppressHydrationWarning
     >
       <head>
@@ -120,13 +117,20 @@ export default async function RootLayout({
         suppressHydrationWarning
         style={{ "--header-h": `${ROOT_LAYOUT_HEADER_HEIGHT}px` } as any}
       >
-        <NextIntlClientProvider>
-          <ReactQueryProvider>
-            <main>{children}</main>
-            {/*<PWAInstaller />*/}
-            <ToastContainer />
-          </ReactQueryProvider>
-        </NextIntlClientProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange={false}
+        >
+          <NextIntlClientProvider>
+            <ReactQueryProvider>
+              <main>{children}</main>
+              {/*<PWAInstaller />*/}
+              <ToastContainer />
+            </ReactQueryProvider>
+          </NextIntlClientProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

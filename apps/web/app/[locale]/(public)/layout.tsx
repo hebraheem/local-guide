@@ -2,7 +2,6 @@ import React from "react";
 import { ROOT_LAYOUT_HEADER_HEIGHT } from "@/constant/variables";
 import ThemeSwitcher from "@/common/ThemeSwitcher";
 import LanguageSwitcher from "@/common/LanguageSwitcher";
-import { getTheme } from "@/lib/theme/detect";
 import Link from "next/link";
 import { getServerAuthUser } from "@/lib/jwt.server";
 import { redirect, RedirectType } from "next/navigation";
@@ -13,16 +12,15 @@ const PublicLayout = async ({
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const theme = await getTheme();
   const { isAuthenticated } = await getServerAuthUser();
 
   if (isAuthenticated) {
     redirect(PAGE_LINKS.DASHBOARD, RedirectType.push);
   }
   return (
-    <div className="min-h-dvh bg-brand-bg text-brand-text dark:bg-brand-bg-dark dark:text-brand-text-dark">
+    <div className="min-h-dvh bg-brand-bg text-brand-text dark:text-brand-text-dark">
       <header
-        className={`sticky top-0 z-30 w-full border-b border-brand-border/60 bg-brand-card/80 dark:bg-brand-card-dark/40 backdrop-blur h-[${ROOT_LAYOUT_HEADER_HEIGHT}px]`}
+        className={`sticky py-3 top-0 z-50 w-full bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 backdrop-blur-md border-b border-gray-200 dark:border-gray-800  h-[${ROOT_LAYOUT_HEADER_HEIGHT}px]`}
       >
         <div className="mx-auto sm:max-w-3xl px-4 py-2 flex items-center justify-between">
           <div>
@@ -33,7 +31,7 @@ const PublicLayout = async ({
             </Link>
           </div>
           <div>
-            <ThemeSwitcher currentTheme={theme} />
+            <ThemeSwitcher />
             <LanguageSwitcher />
           </div>
         </div>

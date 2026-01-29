@@ -11,12 +11,9 @@ import { DEFAULT_AVATAR_URL } from "@/constant/variables";
 type Props = {
   userName?: string;
   userAvatar?: string;
-  currentTheme: "light" | "dark";
 };
 
-export default function DashboardHeader({
-  currentTheme,
-}: Props) {
+export default function DashboardHeader({}: Props) {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [username, setUsername] = useState<string | undefined>(undefined);
   const [userAvatarUrl, setUserAvatarUrl] = useState<string | undefined>(
@@ -84,7 +81,6 @@ export default function DashboardHeader({
       <SettingsModal
         isOpen={isSettingsOpen}
         onCloseAction={() => setIsSettingsOpen(false)}
-        currentTheme={currentTheme}
       />
     </>
   );

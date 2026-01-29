@@ -4,7 +4,6 @@ import SearchBar from "@/common/SearchBar";
 import ActionButton from "@/ui/ActionButton";
 import HelperCard from "@/cards/HelperCard";
 import RequestCard from "@/cards/RequestCard";
-import { getTheme } from "@/lib/theme/detect";
 import Link from "next/link";
 import { getAllUsers, getCurrentUser } from "@/actions/user.action";
 import { getTranslations } from "next-intl/server";
@@ -12,7 +11,6 @@ import { DEFAULT_AVATAR_URL } from "@/constant/variables";
 
 const Dashboard = async () => {
   const t = await getTranslations();
-  const theme = await getTheme();
   const user = (await getCurrentUser())?.data;
   const role = user?.roles?.includes("HELPER") ? "REQUESTER" : "HELPER";
   const helpers = (await getAllUsers({ limit: 5, role }))?.data;
@@ -52,7 +50,7 @@ const Dashboard = async () => {
         {/* Header */}
         <DashboardHeader
           userName={user?.username}
-          currentTheme={theme}
+          
           userAvatar={user?.profile?.avatarUrl ?? DEFAULT_AVATAR_URL}
         />
 
@@ -68,8 +66,8 @@ const Dashboard = async () => {
             </p>
           </div>
 
-          {/* Search Bar */}
-          <div className="w-full">
+          {/* Search Bar currently hidden*/}
+          <div className="w-full hidden">
             <SearchBar placeholder={t("DASHBOARD_SEARCH_PLACEHOLDER")} />
           </div>
 

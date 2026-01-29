@@ -1,13 +1,11 @@
 import DashboardHeader from "@/common/DashboardHeader";
 import SearchBar from "@/common/SearchBar";
 import React from "react";
-import { getTheme } from "@/lib/theme/detect";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 
 export default async function RequestsPage() {
   const t = await getTranslations();
-  const theme = await getTheme();
 
   // Mock requests data - replace it with real data
   const requests = [
@@ -89,7 +87,7 @@ export default async function RequestsPage() {
       {/* Header */}
       <DashboardHeader
         userName="User"
-        currentTheme={theme}
+        
       />
 
       {/* Main Content */}

@@ -7,11 +7,11 @@ import { useRouter, usePathname } from "next/navigation";
 import axios from "axios";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
+import { useTheme } from "next-themes";
 
 type Props = {
   isOpen: boolean;
   onCloseAction: () => void;
-  currentTheme: "light" | "dark";
 };
 
 const SUPPORTED_LOCALES = {
@@ -23,14 +23,18 @@ const SUPPORTED_LOCALES = {
 export default function SettingsModal({
   isOpen,
   onCloseAction,
-  currentTheme,
 }: Props) {
   const t = useTranslations();
   const router = useRouter();
-  const [theme, setTheme] = useState<"light" | "dark">(currentTheme);
+  const { theme: currentTheme, setTheme } = useTheme();
   const [pending, startTransition] = useTransition();
   const locale = useLocale();
   const pathname = usePathname();
+  const [mounted, setMounted] = React.useState(false);
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   if (!isOpen) return null;
 
@@ -42,19 +46,6 @@ export default function SettingsModal({
 
   const handleThemeChange = (newTheme: "light" | "dark") => {
     setTheme(newTheme);
-    startTransition(async () => {
-      try {
-        await fetch("/api/theme", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ theme: newTheme }),
-          cache: "no-store",
-        });
-        window.location.reload();
-      } catch (e) {
-        console.error("Failed to switch theme", e);
-      }
-    });
   };
 
   return (
@@ -138,14 +129,14 @@ export default function SettingsModal({
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-full bg-purple-100 dark:bg-purple-900 flex items-center justify-center text-purple-600 dark:text-purple-400">
-                      {theme === "dark" ? "🌙" : "☀️"}
+                      {mounted && currentTheme === "dark" ? "🌙" : "☀️"}
                     </div>
                     <div>
                       <h4 className="font-semibold text-gray-900 dark:text-white">
                         {t("SETTINGS_THEME")}
                       </h4>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
-                        {theme === "dark"
+                        {mounted && currentTheme === "dark"
                           ? t("SETTINGS_THEME_DARK")
                           : t("SETTINGS_THEME_LIGHT")}
                       </p>
@@ -155,9 +146,9 @@ export default function SettingsModal({
                 <div className="flex gap-2">
                   <button
                     onClick={() => handleThemeChange("light")}
-                    disabled={pending}
+                    disabled={!mounted}
                     className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
-                      theme === "light"
+                      mounted && currentTheme === "light"
                         ? "bg-primary-600 text-white shadow-md"
                         : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
                     }`}
@@ -184,9 +175,9 @@ export default function SettingsModal({
                   </button>
                   <button
                     onClick={() => handleThemeChange("dark")}
-                    disabled={pending}
+                    disabled={!mounted}
                     className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all flex items-center justify-center gap-2 ${
-                      theme === "dark"
+                      mounted && currentTheme === "dark"
                         ? "bg-primary-600 text-white shadow-md"
                         : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700"
                     }`}

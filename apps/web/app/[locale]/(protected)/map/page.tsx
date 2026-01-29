@@ -1,13 +1,11 @@
 import DashboardHeader from "@/common/DashboardHeader";
 import MapComponent from "@/map/MapComponent";
 import React from "react";
-import { getTheme } from "@/lib/theme/detect";
 import MapSearchAndFilterButtons from "@/[locale]/(protected)/map/MapSearchAndFilterButtons";
 import { getTranslations } from "next-intl/server";
 
 export default async function MapPage() {
   const t = await getTranslations();
-  const theme = await getTheme();
 
   // Mock request data with geographical coordinates
   // In production, these would come from your database with actual geocoded locations
@@ -83,7 +81,7 @@ export default async function MapPage() {
       {/* Header */}
       <DashboardHeader
         userName="User"
-        currentTheme={theme}
+        
       />
 
       {/* Main Content */}

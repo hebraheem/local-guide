@@ -4,10 +4,8 @@ import Link from "next/link";
 import React, { useState } from "react";
 import LanguageSwitcher from "@/components/common/LanguageSwitcher";
 import ThemeSwitcher from "@/common/ThemeSwitcher";
-import { Theme } from "@/lib/theme/detect";
 
 type Props = {
-  theme: Theme;
   translations: {
     howItWorks: string;
     safety: string;
@@ -17,7 +15,7 @@ type Props = {
   };
 };
 
-const LandingHeaderClient = ({  translations, theme }: Props) => {
+const LandingHeaderClient = ({ translations }: Props) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const inPageNavigate = (id: string) => {
@@ -59,7 +57,7 @@ const LandingHeaderClient = ({  translations, theme }: Props) => {
 
           <div className="hidden md:flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
-              <ThemeSwitcher currentTheme={theme} />
+              <ThemeSwitcher />
               <LanguageSwitcher />
             </div>
 
@@ -102,7 +100,7 @@ const LandingHeaderClient = ({  translations, theme }: Props) => {
               </svg>
             </button>
             <div className="md:hidden inline-block mr-2">
-              <ThemeSwitcher currentTheme={theme} />
+              <ThemeSwitcher />
             </div>
           </div>
         </div>
