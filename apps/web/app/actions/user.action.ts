@@ -2,7 +2,7 @@
 
 import { Role, User } from "@/types/user";
 import { safeAction } from "@/lib/response-handler";
-import { ApiResponse, ResponseType } from "@/types/api";
+import { ApiResponse, PaginatedResponse, ResponseType } from "@/types/api";
 import { userService } from "@/services";
 import { Language } from "@/forms/LanguageInput";
 import { revalidatePath } from "next/cache";
@@ -60,17 +60,36 @@ export const submitProfileUpdate = safeAction(
 export async function getCurrentUser(): Promise<ApiResponse<User>> {
   // Force Next.js to treat this as dynamic by accessing headers
   await headers();
-  
+
   const user = await userService.currentUser();
-  if(!user){
+  if (!user) {
     return {
       statusCode: 404,
       message: "User not found",
-    }
+    };
   }
   return {
     statusCode: 200,
     data: user.data,
     message: "Current user fetched successfully",
+  };
+}
+
+export async function getUserById(id: string): Promise<ApiResponse<User>> {
+  const user = await userService.getById(id);
+  if (!user) {
+    return {
+      statusCode: 404,
+      message: "User not found",
+    };
   }
+  return {
+    statusCode: 200,
+    data: user,
+    message: "User fetched successfully",
+  };
+}
+
+export async function getAllUsers(query = {}): Promise<PaginatedResponse<User>> {
+  return await userService.getAll(query);
 }

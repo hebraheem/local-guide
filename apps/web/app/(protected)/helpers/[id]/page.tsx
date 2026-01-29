@@ -2,6 +2,7 @@ import React from "react";
 import initTranslations from "@/lib/i18n/server";
 import Link from "next/link";
 import BottomNav from "@/common/BottomNav";
+import { getUserById } from "@/actions/user.action";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -11,7 +12,12 @@ export default async function HelperDetailPage({ params }: Props) {
   const { t } = await initTranslations();
   const { id } = await params;
 
-  // Mock helper data - replace with real data
+  const helper2 = (await getUserById(id))?.data
+
+  console.log("helper", helper2);
+
+
+  // Mock helper data - replace it with real data
   const helper = {
     id,
     name: "Sarah Johnson",

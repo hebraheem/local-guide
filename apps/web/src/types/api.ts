@@ -8,10 +8,14 @@ export interface ApiResponse<T = unknown> {
 
 export interface PaginatedResponse<T> {
   data: T[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
+  meta: {
+    totalRecord: number;
+    currentPage: number;
+    limit: number;
+    totalPages: number;
+  };
+  statusCode?: number;
+  message?: string;
 }
 
 export interface ApiError {

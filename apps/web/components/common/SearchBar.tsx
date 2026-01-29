@@ -8,7 +8,7 @@ export default function SearchBar({
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement> & {
   placeholder?: string;
-  handleSearch?: FormEventHandler<HTMLInputElement> | undefined;
+  handleSearch?: FormEventHandler<HTMLInputElement>;
 }) {
   return (
     <div className="w-full">

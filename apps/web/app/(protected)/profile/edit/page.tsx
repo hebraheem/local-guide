@@ -5,6 +5,7 @@ import BottomNav from "@/common/BottomNav";
 import ProfileForm from "./ProfileForm";
 import PasswordForm from "./PasswordForm";
 import { getCurrentUser } from "@/actions/user.action";
+import { PAGE_LINKS } from "@/constant/page.links";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -19,7 +20,7 @@ export default async function ProfileEditPage() {
       <header className="sticky top-0 z-30 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
         <div className="mx-auto max-w-4xl px-4 py-3 flex items-center gap-3">
           <Link
-            href="/profile"
+            href={PAGE_LINKS.PROFILE}
             className="h-10 w-10 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 flex items-center justify-center transition-colors"
           >
             <svg

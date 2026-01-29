@@ -1,10 +1,21 @@
 import { api } from "@/lib/api-client";
 import type { User } from "@/types/user";
 import { AxiosResponse } from "axios";
+import { PaginatedResponse } from "@/types/api";
 
 export const userService = {
-  getAll: async (): Promise<User[]> => {
-    const { data } = await api.get<User[]>("/users");
+  getAll: async (
+    query: Record<string, any>,
+  ): Promise<PaginatedResponse<User>> => {
+    let queryString = new URLSearchParams(query).toString();
+    if (queryString) {
+      queryString = `?${queryString}`;
+    }
+    console.log("queryString", queryString);
+
+    const { data } = await api.get<PaginatedResponse<User>>(
+      "/users" + queryString,
+    );
     return data;
   },
   getById: async (id: string): Promise<User> => {

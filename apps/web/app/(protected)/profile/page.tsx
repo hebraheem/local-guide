@@ -7,8 +7,7 @@ import { getTheme } from "@/lib/theme/detect";
 import Link from "next/link";
 import { getCurrentUser } from "@/actions/user.action";
 import { toast } from "react-toastify";
-import Image from "next/image";
-import { DEFAULT_AVATAR_URL } from "api/dist/src/common/constants/utils";
+import ProfileImage from "@/(protected)/profile/component/ProfileImage";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -52,11 +51,7 @@ export default async function ProfilePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pb-20">
       {/* Header */}
-      <DashboardHeader
-        userName={user?.username}
-        currentLocale={locale}
-        currentTheme={theme}
-      />
+      <DashboardHeader currentLocale={locale} currentTheme={theme} />
 
       {/* Main Content */}
       <main className="mx-auto max-w-4xl px-4 py-6 space-y-6">
@@ -76,15 +71,7 @@ export default async function ProfilePage() {
             {/* Avatar */}
             <div className="flex flex-col md:flex-row md:items-end md:justify-between -mt-16 mb-4">
               <div className="flex items-end gap-4">
-                <div className="h-32 w-32 rounded-2xl border-4 border-white dark:border-gray-800 shadow-xl flex items-center justify-center text-white text-4xl font-bold">
-                  <Image
-                    src={user?.profile?.avatarUrl ?? DEFAULT_AVATAR_URL}
-                    alt="Avatar"
-                    width={124}
-                    height={124}
-                    className='rounded-2xl'
-                  />
-                </div>
+                <ProfileImage user={user} />
                 <div className="pb-2">
                   <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
                     {userProfile?.firstName} {"   "}

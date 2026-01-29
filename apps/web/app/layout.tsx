@@ -7,6 +7,7 @@ import { getTheme } from "@/src/lib/theme/detect";
 import React from "react";
 import { ROOT_LAYOUT_HEADER_HEIGHT } from "@/constant/variables";
 import { ToastContainer } from "react-toastify";
+import ReactQueryProvider from "@/providers/ReactQueryProvider";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -86,7 +87,11 @@ export default async function RootLayout({
   const theme = await getTheme();
 
   return (
-    <html lang={locale} className={theme === "dark" ? "dark" : undefined}>
+    <html
+      lang={locale}
+      className={theme === "dark" ? "dark" : undefined}
+      suppressHydrationWarning
+    >
       <head>
         <meta name="theme-color" content="#4f46e5" />
         <link rel="icon" href="/favicon.ico" />
@@ -102,9 +107,11 @@ export default async function RootLayout({
         suppressHydrationWarning
         style={{ "--header-h": `${ROOT_LAYOUT_HEADER_HEIGHT}px` } as any}
       >
-        <main>{children}</main>
-        {/*<PWAInstaller />*/}
-        <ToastContainer />
+        <ReactQueryProvider>
+          <main>{children}</main>
+          {/*<PWAInstaller />*/}
+          <ToastContainer />
+        </ReactQueryProvider>
       </body>
     </html>
   );

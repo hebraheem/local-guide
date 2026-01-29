@@ -21,7 +21,7 @@ const ThemeSwitcher = ({ currentTheme }: Props) => {
           body: JSON.stringify({ theme: next }),
           cache: "no-store",
         });
-        // Reload so Server Components re-render with new theme class on <html>
+        // Reload so Server Components re-render with a new theme class on <html>
         window.location.reload();
       } catch (e) {
         console.error("Failed to switch theme", e);
@@ -62,7 +62,9 @@ const ThemeSwitcher = ({ currentTheme }: Props) => {
           <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
         </svg>
       )}
-      <span className="hidden sm:inline">{value === "dark" ? "Dark" : "Light"}</span>
+      <span className="hidden sm:inline">
+        {value === "dark" ? "Dark" : "Light"}
+      </span>
     </button>
   );
 };

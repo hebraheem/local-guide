@@ -9,13 +9,16 @@ import initTranslations from "@/lib/i18n/server";
 import { getLocale } from "@/lib/i18n/detect";
 import { getTheme } from "@/lib/theme/detect";
 import Link from "next/link";
+import { getCurrentUser } from "@/actions/user.action";
+import { DEFAULT_AVATAR_URL } from "api/dist/src/common/constants/utils";
 
 const Dashboard = async () => {
   const { t } = await initTranslations();
   const locale = await getLocale();
   const theme = await getTheme();
+  const user= (await getCurrentUser())?.data;
 
-  // Mock data - replace with real data from your API
+  // Mock data - replace it with real data from your API
   const mockHelpers = [
     { id: "1", name: "Sarah Johnson", role: "Translator", city: "Berlin", rating: 4.9 },
     { id: "2", name: "Michael Chen", role: "Tour Guide", city: "Munich", rating: 4.8 },
@@ -56,15 +59,16 @@ const Dashboard = async () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pb-20">
       {/* Header */}
-      <DashboardHeader 
-        userName="Guest User" 
+      <DashboardHeader
+        userName={user?.username}
         currentLocale={locale}
         currentTheme={theme}
+        userAvatar={user?.profile?.avatarUrl ?? DEFAULT_AVATAR_URL}
       />
 
       {/* Main Content */}
       <main className="mx-auto max-w-7xl px-4 py-6 space-y-6">
-        {/* Welcome Section */}
+        {/* Welcome, Section */}
         <div className="space-y-2">
           <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
             {t("DASHBOARD_WELCOME")}! 👋
@@ -83,7 +87,16 @@ const Dashboard = async () => {
         <div className="grid grid-cols-3 gap-3 md:gap-4">
           <ActionButton
             icon={
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M12 5v14M5 12h14" />
               </svg>
             }
@@ -93,7 +106,16 @@ const Dashboard = async () => {
           />
           <ActionButton
             icon={
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                 <polyline points="14 2 14 8 20 8" />
                 <line x1="16" y1="13" x2="8" y2="13" />
@@ -107,7 +129,16 @@ const Dashboard = async () => {
           />
           <ActionButton
             icon={
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
                 <path d="M1 6l7-3 7 3 7-3v15l-7 3-7-3-7 3z" />
                 <path d="M8 3v15" />
                 <path d="M16 6v15" />
@@ -125,14 +156,14 @@ const Dashboard = async () => {
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
               {t("DASHBOARD_RECOMMENDED_HELPERS")}
             </h3>
-            <Link 
+            <Link
               href="/helpers"
               className="text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
             >
               {t("DASHBOARD_VIEW_ALL")} →
             </Link>
           </div>
-          
+
           <div className="grid gap-3">
             {mockHelpers.map((helper) => (
               <HelperCard
@@ -153,14 +184,14 @@ const Dashboard = async () => {
             <h3 className="text-xl font-bold text-gray-900 dark:text-white">
               {t("DASHBOARD_OPEN_REQUESTS")}
             </h3>
-            <Link 
+            <Link
               href="/requests"
               className="text-sm font-semibold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 transition-colors"
             >
               {t("DASHBOARD_VIEW_ALL")} →
             </Link>
           </div>
-          
+
           <div className="grid gap-3">
             {mockRequests.map((request) => (
               <RequestCard
