@@ -1,6 +1,6 @@
 "use client"
 
-import React, { FormEventHandler } from "react";
+import React, { InputEventHandler } from "react";
 
 export default function SearchBar({
   placeholder = "Search",
@@ -8,7 +8,7 @@ export default function SearchBar({
   ...props
 }: React.InputHTMLAttributes<HTMLInputElement> & {
   placeholder?: string;
-  handleSearch?: FormEventHandler<HTMLInputElement>;
+  handleSearch?: InputEventHandler<HTMLInputElement>;
 }) {
   return (
     <div className="w-full">

@@ -1,11 +1,15 @@
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import {
+  InfiniteData,
+  useInfiniteQuery,
+  UseInfiniteQueryOptions,
+  UseQueryOptions,
+} from "@tanstack/react-query";
 import { PaginatedResponse } from "@/types/api";
 import { User } from "@/types/user";
 import { userService } from "@/services";
 
 export type UsersQueryParams = {
   role?: string;
-  page?: number;
   limit?: number;
   search?: string;
 };
@@ -13,14 +17,28 @@ export type UsersQueryParams = {
 export const useUsers = (
   params: UsersQueryParams = {},
   options?: Omit<
-    UseQueryOptions<PaginatedResponse<User>>,
-    "queryKey" | "queryFn"
-  >
+    UseInfiniteQueryOptions<
+      PaginatedResponse<User>, // TQueryFnData
+      Error, // TError
+      InfiniteData<PaginatedResponse<User>>, // TData
+      readonly unknown[], // TQueryKey
+      number // TPageParam
+    >,
+    "queryKey" | "queryFn" | "getNextPageParam" | "initialPageParam"
+  >,
 ) => {
-  return useQuery<PaginatedResponse<User>>({
-    queryKey: ["users", params],
-    queryFn: () => userService.getAll(params),
-    //suspense: false,
+  return useInfiniteQuery({
+    queryKey: ["users", params] as const,
+    queryFn: ({ pageParam = 1 }) =>
+      userService.getAll({
+        ...params,
+        page: pageParam,
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const { currentPage, totalPages } = lastPage.meta;
+      return currentPage < totalPages ? currentPage + 1 : undefined;
+    },
     ...options,
   });
 };

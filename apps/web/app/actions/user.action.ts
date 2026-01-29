@@ -85,7 +85,7 @@ export async function getUserById(id: string): Promise<ApiResponse<User>> {
   }
   return {
     statusCode: 200,
-    data: user,
+    data: user.data,
     message: "User fetched successfully",
   };
 }

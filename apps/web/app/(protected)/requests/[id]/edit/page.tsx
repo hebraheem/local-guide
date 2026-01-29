@@ -1,7 +1,6 @@
 import React from "react";
 import initTranslations from "@/lib/i18n/server";
 import Link from "next/link";
-import BottomNav from "@/common/BottomNav";
 import RequestForm from "@/forms/RequestForm";
 
 type Props = {
@@ -76,9 +75,6 @@ export default async function RequestEditPage({ params }: Props) {
           <RequestForm request={request} isEdit={true} />
         </div>
       </main>
-
-      {/* Bottom Navigation */}
-      <BottomNav />
     </div>
   );
 }

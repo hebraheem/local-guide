@@ -219,9 +219,6 @@ export default async function RequestsPage() {
           </div>
         </div>
       </main>
-
-      {/* Bottom Navigation */}
-      <BottomNav />
     </div>
   );
 }

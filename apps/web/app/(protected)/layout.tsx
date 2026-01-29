@@ -5,7 +5,7 @@ import { redirect, RedirectType } from "next/navigation";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 import LocationTracker from "@/components/common/LocationTracker";
-
+import BottomNav from "@/common/BottomNav";
 
 export const metadata: Metadata = {
   title: "Welcome to Your Local Guide",
@@ -26,11 +26,16 @@ const PrivateLayout = ({
   }
 
   return (
-    <Suspense>
+    <Suspense fallback="Loading...">
       <div className="min-h-dvh bg-brand-bg text-brand-text dark:bg-brand-bg-dark dark:text-brand-text-dark">
         <main>{children}</main>
       </div>
-      <LocationTracker autoStart updateInterval={60 * 60 * 2 * 1000} showUI={true} />
+      <LocationTracker
+        autoStart
+        updateInterval={60 * 60 * 2 * 1000}
+        showUI={true}
+      />
+      <BottomNav />
     </Suspense>
   );
 };

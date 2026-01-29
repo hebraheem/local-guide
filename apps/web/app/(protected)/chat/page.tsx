@@ -1,11 +1,10 @@
-import BottomNav from "@/components/common/BottomNav";
 import DashboardHeader from "@/common/DashboardHeader";
 import React, { Suspense } from "react";
 import initTranslations from "@/lib/i18n/server";
 import { getLocale } from "@/lib/i18n/detect";
 import { getTheme } from "@/lib/theme/detect";
 import Link from "next/link";
-import ChatSearchBar from "@/chat/ChatSearchBar";
+import ChatSearchBar from "@/(protected)/chat/ChatSearchBar";
 
 export default async function ChatPage() {
   const { t } = await initTranslations();
@@ -114,7 +113,7 @@ export default async function ChatPage() {
                 {conversations.map((conversation) => (
                   <Link
                     key={conversation.id}
-                    href={`/chat/${conversation.id}`}
+                    href={`chat/${conversation.id}`}
                     className="flex items-center gap-4 p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer group"
                   >
                     {/* Avatar */}
@@ -194,9 +193,6 @@ export default async function ChatPage() {
           </div>
         </div>
       </main>
-
-      {/* Bottom Navigation */}
-      <BottomNav />
     </div>
   );
 }

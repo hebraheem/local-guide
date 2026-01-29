@@ -1,7 +1,6 @@
 import React from "react";
 import initTranslations from "@/lib/i18n/server";
 import Link from "next/link";
-import BottomNav from "@/common/BottomNav";
 import ProfileForm from "./ProfileForm";
 import PasswordForm from "./PasswordForm";
 import { getCurrentUser } from "@/actions/user.action";
@@ -89,9 +88,6 @@ export default async function ProfileEditPage() {
           </div>
         </div>
       </main>
-
-      {/* Bottom Navigation */}
-      <BottomNav />
     </div>
   );
 }

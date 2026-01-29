@@ -1,6 +1,5 @@
 import initTranslations from "@/lib/i18n/server";
 import Link from "next/link";
-import BottomNav from "@/common/BottomNav";
 import RequestForm from "@/forms/RequestForm";
 
 export default async function PostRequestPage() {
@@ -49,9 +48,6 @@ export default async function PostRequestPage() {
           <RequestForm />
         </div>
       </main>
-
-      {/* Bottom Navigation */}
-      <BottomNav />
     </div>
   );
 }

@@ -37,7 +37,7 @@ class ApiClient {
       (error: AxiosError<ApiError>) => {
         if ((error.response?.status || error.status) === 401) {
           getTokensOnServer().then((tokens) => {
-            fetch("/api/auth/refresh", {
+            fetch("api/auth/refresh-token", {
               method: "POST",
               body: JSON.stringify({ refreshToken: tokens.refreshToken }),
             }).then((res) => {

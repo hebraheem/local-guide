@@ -166,9 +166,6 @@ export default async function MapPage() {
           </div>
         </div>
       </main>
-
-      {/* Bottom Navigation */}
-      <BottomNav />
     </div>
   );
 }

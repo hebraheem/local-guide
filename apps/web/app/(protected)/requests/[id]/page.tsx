@@ -1,7 +1,6 @@
 import React from "react";
 import initTranslations from "@/lib/i18n/server";
 import Link from "next/link";
-import BottomNav from "@/common/BottomNav";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -204,7 +203,7 @@ export default async function RequestDetailPage({ params }: Props) {
             {t("REQUEST_RESPOND_NOW")}
           </Link>
           <Link
-            href={`/chat/new?request=${request.id}`}
+            href={`/apps/web/app/(protected)/chat/new?request=${request.id}`}
             className="flex-1 px-6 py-4 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-900 dark:text-white font-bold rounded-xl border-2 border-gray-200 dark:border-gray-600 hover:border-primary-500 dark:hover:border-primary-400 transition-all text-center"
           >
             {t("REQUEST_MESSAGE_REQUESTER")}
@@ -226,9 +225,6 @@ export default async function RequestDetailPage({ params }: Props) {
           </div>
         </div>
       </main>
-
-      {/* Bottom Navigation */}
-      <BottomNav />
     </div>
   );
 }

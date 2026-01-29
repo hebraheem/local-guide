@@ -1,4 +1,3 @@
-import BottomNav from "@/common/BottomNav";
 import DashboardHeader from "@/common/DashboardHeader";
 import React from "react";
 import initTranslations from "@/lib/i18n/server";
@@ -256,9 +255,6 @@ export default async function ProfilePage() {
           </div>
         </div>
       </main>
-
-      {/* Bottom Navigation */}
-      <BottomNav />
     </div>
   );
 }
