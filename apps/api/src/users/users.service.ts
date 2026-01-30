@@ -121,7 +121,7 @@ export class UsersService {
       createdAt: 'user.createdAt',
       rating: 'user.avgRating',
       name: 'user.firstName',
-      location: 'user.location',
+      location: 'distance', // virtual field
     } as const;
     type SortKey = keyof typeof SORT_FIELDS;
     const sortKey: SortKey =
@@ -129,8 +129,20 @@ export class UsersService {
         ? (query.sortBy as SortKey)
         : 'location';
 
+    const distanceExpr = `
+  (${EARTH_RADIUS_IN_KM} * acos(
+    cos(radians(:lat)) * cos(radians(location.latitude)) *
+    cos(radians(location.longitude) - radians(:lng)) +
+    sin(radians(:lat)) * sin(radians(location.latitude))
+  ))
+`;
+
     const column = SORT_FIELDS[sortKey];
-    const direction = query?.order === 'ASC' ? 'ASC' : 'DESC';
+    let direction: 'ASC' | 'DESC' | undefined =
+      query?.order === 'ASC' ? 'ASC' : 'DESC';
+    if (column === 'distance' && !query?.order) {
+      direction = 'ASC';
+    }
     const { page = 1, limit = 10 } = query;
     const skip = (page - 1) * limit;
     const users = await this.userRepository
@@ -138,26 +150,16 @@ export class UsersService {
       .leftJoinAndSelect('user.location', 'location')
       .leftJoinAndSelect('user.profile', 'profile')
       .leftJoinAndSelect('profile.address', 'address')
-      .where(
-        `
-      (
-        ${EARTH_RADIUS_IN_KM} * acos(
-          cos(radians(:lat)) * cos(radians(location.latitude)) *
-          cos(radians(location.longitude) - radians(:lng)) +
-          sin(radians(:lat)) * sin(radians(location.latitude))
-        )
-      ) <= :radius
-      `,
-        {
-          lat: latitude,
-          lng: longitude,
-          radius: radiusInKm,
-        },
-      )
+      .addSelect(distanceExpr, 'distance')
+      .where(`${distanceExpr} <= :radius`, {
+        lat: latitude,
+        lng: longitude,
+        radius: radiusInKm,
+      })
       .andWhere('"user"."deletedAt" IS NULL')
       .skip(skip)
       .take(limit)
-      .orderBy(column, direction)
+      .orderBy(column, direction, 'NULLS LAST')
       .getMany();
 
     const total = await this.userRepository
