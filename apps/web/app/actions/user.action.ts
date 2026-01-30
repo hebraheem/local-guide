@@ -90,6 +90,38 @@ export async function getUserById(id: string): Promise<ApiResponse<User>> {
   };
 }
 
-export async function getAllUsers(query = {}): Promise<PaginatedResponse<User>> {
+export async function getAllUsers(
+  query = {},
+): Promise<PaginatedResponse<User>> {
   return await userService.getAll(query);
+}
+
+export async function getNearByUsers(
+  lat: number,
+  lng: number,
+  radiusInKm: number,
+): Promise<PaginatedResponse<User>> {
+  // Force Next.js to treat this as dynamic by accessing headers
+  await headers();
+
+  const user = await userService.nearByUsers(lat, lng, radiusInKm);
+  if (!user) {
+    return {
+      data: [],
+      meta: {
+        totalRecord: 0,
+        currentPage: 1,
+        limit: 10,
+        totalPages: 0,
+      },
+      statusCode: 404,
+      message: "No nearby users found",
+    };
+  }
+  return {
+    statusCode: 200,
+    data: user.data,
+    meta: user.meta,
+    message: "Users fetched successfully",
+  };
 }

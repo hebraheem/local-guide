@@ -1,28 +1,28 @@
-import React, { Suspense, use } from "react";
-import { getServerAuthUser } from "@/lib/jwt.server";
+import React, { Suspense } from "react";
 import { PAGE_LINKS } from "@/constant/page.links";
 import { redirect, RedirectType } from "next/navigation";
 import { Metadata } from "next";
 import { cookies } from "next/headers";
 import LocationTracker from "@/common/LocationTracker";
 import BottomNav from "@/common/BottomNav";
+import { getServerAuthUser } from "@/lib/jwt.server";
 
 export const metadata: Metadata = {
   title: "Welcome to Your Local Guide",
   description: "Connect people who need help with those willing to help them",
 };
 
-const PrivateLayout = ({
+const PrivateLayout = async ({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  use(cookies());
+  await cookies();
 
-  const { isAuthenticated } = use(getServerAuthUser());
+  const { isAuthenticated } = await getServerAuthUser();
 
   if (!isAuthenticated) {
-    redirect(PAGE_LINKS.LOGIN, RedirectType.push);
+   redirect(PAGE_LINKS.LOGIN, RedirectType.push);
   }
 
   return (

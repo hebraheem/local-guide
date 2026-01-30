@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { GoogleMap, Marker, InfoWindow } from "@react-google-maps/api";
 import { useGoogleMaps } from "@/lib/google-maps/loader";
 import Link from "next/link";
@@ -22,7 +22,6 @@ type RequestLocation = {
 
 type MapComponentProps = {
   requests: RequestLocation[];
-  center?: { lat: number; lng: number };
 };
 
 const containerStyle = {
@@ -30,18 +29,25 @@ const containerStyle = {
   height: "100%",
 };
 
-// Default center (Berlin)
-const defaultCenter = {
-  lat: 52.52,
-  lng: 13.405,
-};
 
-export default function MapComponent({ requests, center = defaultCenter }: MapComponentProps) {
+export default function MapComponent({ requests }: MapComponentProps) {
   const  t  = useTranslations();
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [selectedRequest, setSelectedRequest] = useState<RequestLocation | null>(null);
   const [, setMap] = useState<google.maps.Map | null>(null);
 
   const { isLoaded, loadError } = useGoogleMaps();
+
+  useEffect(() => {
+    const match = navigator.geolocation.watchPosition(pos=> {
+      const userPosition = {
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+      };
+      setUserLocation(userPosition);
+    });
+    return () => navigator.geolocation.clearWatch(match);
+  }, []);
 
   const onLoad = useCallback((map: google.maps.Map) => {
     setMap(map);
@@ -62,7 +68,7 @@ export default function MapComponent({ requests, center = defaultCenter }: MapCo
     );
   }
 
-  if (!isLoaded) {
+  if (!isLoaded || !userLocation) {
     return (
       <div className="h-full flex items-center justify-center bg-gray-100 dark:bg-gray-900">
         <div className="text-center">
@@ -88,7 +94,7 @@ export default function MapComponent({ requests, center = defaultCenter }: MapCo
   return (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={center}
+      center={userLocation}
       zoom={12}
       onLoad={onLoad}
       onUnmount={onUnmount}

@@ -37,6 +37,10 @@ export default async function HelperDetailPage({ params }: Props) {
       date: "2 weeks ago",
     },
   ];
+  const hasLocation =
+    typeof helper?.location?.latitude === "number" &&
+    typeof helper?.location?.longitude === "number";
+
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pb-20">
@@ -59,25 +63,33 @@ export default async function HelperDetailPage({ params }: Props) {
             <div className="flex flex-col md:flex-row md:items-end md:justify-between -mt-16 mb-4">
               <div className="flex items-end gap-4">
                 <div className="h-32 w-32 rounded-2xl border-4 border-white dark:border-gray-800 shadow-xl bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white text-4xl font-bold">
-                  {helper?.profile.firstName?.charAt(0)}
+                  {helper?.username?.charAt(0).toUpperCase()}
                 </div>
                 <div className="pb-2">
                   <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
                     {helper?.profile?.firstName} {helper?.profile?.lastName}
                   </h1>
                   <p className="text-gray-600 dark:text-gray-400">
-                    {helper?.username}
+                    @{helper?.username}
                   </p>
                 </div>
               </div>
-
               <div className="mt-4 md:mt-0 flex gap-3">
-                <Link
-                  href={`/chat/new?helper=${helper?.id}`}
-                  className="flex-1 md:flex-none px-6 py-3 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
-                >
-                  {t("HELPER_CONTACT_NOW")}
-                </Link>
+                {hasLocation ? (
+                  <Link
+                    href={`/map/?lat=${helper?.location?.latitude}&long=${helper?.location?.longitude}&id=${helper?.id}`}
+                    className="flex-1 md:flex-none px-6 py-3 bg-gradient-to-r from-primary-600 to-secondary-600 hover:from-primary-700 hover:to-secondary-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+                  >
+                    {t("VIEW_ON_MAP")}
+                  </Link>
+                ) : (
+                  <button
+                    disabled
+                    className="flex-1 md:flex-none px-6 py-3 bg-gray-300 text-gray-500 font-semibold rounded-xl cursor-not-allowed opacity-70"
+                  >
+                    {t("VIEW_ON_MAP")}
+                  </button>
+                )}
               </div>
             </div>
 
@@ -247,10 +259,10 @@ export default async function HelperDetailPage({ params }: Props) {
             Get in touch and start your request today!
           </p>
           <Link
-            href={`/apps/web/app/%5Blocale%5D/(protected)/chat/new?helper=${helper?.id}`}
+            href={`/post?helper=${helper?.id}`}
             className="inline-block px-8 py-3 bg-white hover:bg-gray-100 text-primary-700 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
           >
-            {t("HELPER_CONTACT_NOW")}
+            {t("SEND_REQUEST_NOW")}
           </Link>
         </div>
       </main>

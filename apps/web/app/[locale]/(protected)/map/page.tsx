@@ -3,9 +3,23 @@ import MapComponent from "@/map/MapComponent";
 import React from "react";
 import MapSearchAndFilterButtons from "@/[locale]/(protected)/map/MapSearchAndFilterButtons";
 import { getTranslations } from "next-intl/server";
+import DistanceMapComponent from "@/map/DistanceMapComponent";
+import { userService } from "@/services";
+import HelperInfo from "@/[locale]/(protected)/helpers/[id]/component/HelperInfo";
+import Link from "next/link";
 
-export default async function MapPage() {
+type PageParams = {
+  searchParams: {
+    long: string;
+    lat: string;
+    id: string;
+  };
+};
+export default async function MapPage({ searchParams }: PageParams) {
   const t = await getTranslations();
+  const { lat, long, id } = await searchParams;
+  const isUserView = lat && long && id;
+  const helper = id ? (await userService.getById(id))?.data : null;
 
   // Mock request data with geographical coordinates
   // In production, these would come from your database with actual geocoded locations
@@ -19,7 +33,7 @@ export default async function MapPage() {
       description:
         "I need someone to translate 3 pages of legal documents from English to German.",
       postedBy: "John Doe",
-      position: { lat: 52.52, lng: 13.405 },
+      position: { lat: 49.94576125126638, lng: 9.604067242124868 },
     },
     {
       id: 2,
@@ -30,7 +44,7 @@ export default async function MapPage() {
       description:
         "I'm visiting Berlin this weekend and would love a local guide.",
       postedBy: "Maria Garcia",
-      position: { lat: 52.5408, lng: 13.4133 },
+      position: { lat: 49.8457481318782, lng: 9.604074133960424 },
     },
     {
       id: 3,
@@ -41,7 +55,7 @@ export default async function MapPage() {
       description:
         "Looking for someone to study with for upcoming calculus exam.",
       postedBy: "Alex Brown",
-      position: { lat: 52.4995, lng: 13.4038 },
+      position: { lat: 49.94776125126638, lng: 9.604067242124868 },
     },
     {
       id: 4,
@@ -51,7 +65,7 @@ export default async function MapPage() {
       urgent: true,
       description: "Need 2 people to help move furniture to new apartment.",
       postedBy: "Sarah Miller",
-      position: { lat: 52.5163, lng: 13.2988 },
+      position: { lat: 49.94596125126638, lng: 9.604067242124868 },
     },
     {
       id: 5,
@@ -61,7 +75,7 @@ export default async function MapPage() {
       urgent: true,
       description: "Need help organizing documents for visa extension.",
       postedBy: "Anna Chen",
-      position: { lat: 52.5145, lng: 13.4531 },
+      position: { lat: 49.54576125126638, lng: 9.604067242124868 },
     },
     {
       id: 6,
@@ -72,17 +86,49 @@ export default async function MapPage() {
       description:
         "Looking for native Spanish speaker for weekly conversation practice.",
       postedBy: "David Lee",
-      position: { lat: 52.4729, lng: 13.385 },
+      position: { lat: 49.44576125126638, lng: 9.604067242124868 },
     },
   ];
+
+  if (isUserView) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pb-20">
+        {/* Header */}
+        <DashboardHeader />
+
+        {/* Main Content */}
+        <main className="mx-auto w-full max-w-7xl px-4 py-4 space-y-4">
+          {/* Page Header */}
+          <HelperInfo helper={helper!} />
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden border border-gray-200 dark:border-gray-700 h-[500px] md:h-[600px] relative">
+            <DistanceMapComponent
+              to={{ lat: parseFloat(lat), lng: parseFloat(long) }}
+            />
+          </div>
+          {/* CTA Section */}
+          <div className="bg-gradient-to-r from-primary-600 to-secondary-600 dark:from-primary-800 dark:to-secondary-800 rounded-2xl shadow-xl p-8 text-center">
+            <h3 className="text-2xl font-bold text-white mb-2">
+              Ready to work with {helper?.profile?.firstName}?
+            </h3>
+            <p className="text-white/90 mb-6">
+              Get in touch and start your request today!
+            </p>
+            <Link
+              href={`/post?helper=${helper?.id}`}
+              className="inline-block px-8 py-3 bg-white hover:bg-gray-100 text-primary-700 font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105"
+            >
+              {t("SEND_REQUEST_NOW")}
+            </Link>
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 pb-20">
       {/* Header */}
-      <DashboardHeader
-        userName="User"
-        
-      />
+      <DashboardHeader />
 
       {/* Main Content */}
       <main className="mx-auto w-full max-w-7xl px-4 py-4 space-y-4">
@@ -98,10 +144,6 @@ export default async function MapPage() {
             </p>
           </div>
         </div>
-
-        {/* Search Bar */}
-
-        {/* Filters */}
 
         <MapSearchAndFilterButtons />
         {/* Map Container */}

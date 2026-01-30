@@ -306,5 +306,8 @@
   "LOCATION_TRACKING_PRIVACY_DESC": "Votre position n'est mise à jour que lorsque le suivi est activé. Vous pouvez arrêter le suivi à tout moment. Les données de localisation sont stockées en toute sécurité.",
   "LOCATION_PERMISSION_DENIED": "Permission de localisation refusée",
   "LOCATION_UNAVAILABLE": "Informations de localisation indisponibles",
-  "LOCATION_TIMEOUT": "La demande de localisation a expiré"
+  "LOCATION_TIMEOUT": "La demande de localisation a expiré",
+  "VIEW_ON_MAP" : "Voir sur la carte",
+  "AWAY": "Absent",
+  "SEND_REQUEST_NOW": "Envoyer la Demande Maintenant"
 }

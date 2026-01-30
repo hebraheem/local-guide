@@ -306,5 +306,8 @@
   "LOCATION_TRACKING_PRIVACY_DESC": "Ihr Standort wird nur aktualisiert, wenn die Verfolgung aktiviert ist. Sie können die Verfolgung jederzeit stoppen. Standortdaten werden sicher gespeichert.",
   "LOCATION_PERMISSION_DENIED": "Standortberechtigung verweigert",
   "LOCATION_UNAVAILABLE": "Standortinformationen nicht verfügbar",
-  "LOCATION_TIMEOUT": "Standortanfrage hat das Zeitlimit überschritten"
+  "LOCATION_TIMEOUT": "Standortanfrage hat das Zeitlimit überschritten",
+  "VIEW_ON_MAP" : "Auf Karte anzeigen",
+  "AWAY": "Abwesend",
+  "SEND_REQUEST_NOW" : "Anfrage jetzt senden"
 }

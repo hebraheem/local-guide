@@ -306,5 +306,8 @@
   "LOCATION_TRACKING_PRIVACY_DESC": "Your location is only updated when tracking is enabled. You can stop tracking anytime. Location data is stored securely.",
   "LOCATION_PERMISSION_DENIED": "Location permission denied",
   "LOCATION_UNAVAILABLE": "Location information unavailable",
-  "LOCATION_TIMEOUT": "Location request timed out"
+  "LOCATION_TIMEOUT": "Location request timed out",
+  "VIEW_ON_MAP" : "View on Map",
+  "AWAY": "Away",
+  "SEND_REQUEST_NOW": "Send Request Now"
 }

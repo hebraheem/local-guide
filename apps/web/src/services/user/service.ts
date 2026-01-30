@@ -39,6 +39,10 @@ export const userService = {
     const { data } = await api.get<AxiosResponse<User>>(`/users/me`);
     return data;
   },
+  nearByUsers: async (lat:number,lng:number, radiusInKm:number): Promise<PaginatedResponse<User>> => {
+    const { data } = await api.get<PaginatedResponse<User>>(`/users/location/${lat}/${lng}/${radiusInKm}`);
+    return data;
+  },
   delete: async (id: string): Promise<void> => {
     await api.patch(`/users/${id}`);
   },

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React from "react";
 import Link from "next/link";
 import { PAGE_LINKS } from "@/constant/page.links";
 import { useRouter, usePathname } from "next/navigation";
@@ -27,7 +27,6 @@ export default function SettingsModal({
   const t = useTranslations();
   const router = useRouter();
   const { theme: currentTheme, setTheme } = useTheme();
-  const [pending, startTransition] = useTransition();
   const locale = useLocale();
   const pathname = usePathname();
   const [mounted, setMounted] = React.useState(false);
@@ -65,7 +64,7 @@ export default function SettingsModal({
         >
           {/* Header */}
           <div className="sticky top-0 bg-gradient-to-r from-primary-600 to-secondary-600 dark:from-primary-800 dark:to-secondary-800 text-white px-6 py-4 rounded-t-3xl flex items-center justify-between">
-            <h2 className="text-xl font-bold">{t("SETTINGS_TITLE")}</h2>
+            <h2 className="text-xl font-bold text-primary-50">{t("SETTINGS_TITLE")}</h2>
             <button
               onClick={onCloseAction}
               className="h-8 w-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
@@ -110,7 +109,6 @@ export default function SettingsModal({
                       <button
                         key={code}
                         onClick={() => handleLanguageChange(code)}
-                        disabled={pending}
                         className={`flex-1 py-2 px-4 rounded-lg font-medium transition-all ${
                           locale === code
                             ? "bg-primary-600 text-white shadow-md"
