@@ -116,13 +116,28 @@ export class UsersService {
     location: LocationParamDto,
   ): Promise<ListResponseDto<UserResponseDto>> {
     const { latitude, longitude, radiusInKm } = location;
+
+    const SORT_FIELDS = {
+      createdAt: 'user.createdAt',
+      rating: 'user.avgRating',
+      name: 'user.firstName',
+      location: 'user.location',
+    } as const;
+    type SortKey = keyof typeof SORT_FIELDS;
+    const sortKey: SortKey =
+      query?.sortBy && query.sortBy in SORT_FIELDS
+        ? (query.sortBy as SortKey)
+        : 'location';
+
+    const column = SORT_FIELDS[sortKey];
+    const direction = query?.order === 'ASC' ? 'ASC' : 'DESC';
     const { page = 1, limit = 10 } = query;
     const skip = (page - 1) * limit;
     const users = await this.userRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.location', 'location')
       .leftJoinAndSelect('user.profile', 'profile')
-      .leftJoinAndSelect('user.profile.address', 'address')
+      .leftJoinAndSelect('profile.address', 'address')
       .where(
         `
       (
@@ -142,6 +157,7 @@ export class UsersService {
       .andWhere('"user"."deletedAt" IS NULL')
       .skip(skip)
       .take(limit)
+      .orderBy(column, direction)
       .getMany();
 
     const total = await this.userRepository

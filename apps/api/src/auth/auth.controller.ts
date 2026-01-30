@@ -103,8 +103,8 @@ export class AuthController {
     description: 'Internal server error',
   })
   async refreshToken(
-    @Body('refreshToken') refreshTokenDto: RefreshTokenDto,
+    @Body() refreshToken: RefreshTokenDto,
   ): Promise<TokenResponse> {
-    return await this.authService.refreshTokens(refreshTokenDto);
+    return await this.authService.refreshTokens(refreshToken);
   }
 }

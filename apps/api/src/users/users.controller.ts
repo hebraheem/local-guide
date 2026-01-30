@@ -124,6 +124,23 @@ export class UsersController {
     example: '10',
   })
   @ApiQuery({
+    name: 'sortBy',
+    required: false,
+    type: 'enum',
+    enum: ['createdAt', 'rating', 'name', 'location'],
+    description:
+      'Field to sort by (createdAt, rating, name, location). Default is location.',
+    example: 'location',
+  })
+  @ApiQuery({
+    name: 'order',
+    required: false,
+    type: 'enum',
+    enum: ['ASC', 'DESC'],
+    description: 'Sort order (ASC or DESC). Default is DESC.',
+    example: 'DESC',
+  })
+  @ApiQuery({
     name: 'page',
     required: false,
     description: 'Page number for pagination',
@@ -139,7 +156,6 @@ export class UsersController {
     @Query() query: ListRequestDto,
     @Param() location: LocationParamDto,
   ): Promise<ListResponseDto<UserResponseDto>> {
-    console.log('location', location);
     return this.usersService.findUserByLocation(query, location);
   }
 

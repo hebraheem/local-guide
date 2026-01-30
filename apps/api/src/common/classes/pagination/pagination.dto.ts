@@ -13,6 +13,12 @@ export class ListRequestDto {
   @IsNumber()
   @Min(1)
   limit?: number;
+
+  @IsOptional()
+  sortBy?: string;
+
+  @IsOptional()
+  order?: 'ASC' | 'DESC';
 }
 
 export class ListResponseDto<T> {
