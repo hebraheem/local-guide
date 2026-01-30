@@ -72,6 +72,7 @@ export async function getTokenOnServer(
 
 export async function getRefreshTokenOnServer(): Promise<string | null> {
   const cookieStore = await cookies();
+
   return cookieStore.get(REFRESH_TOKEN_STORAGE_KEY)?.value || null;
 }
 

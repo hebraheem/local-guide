@@ -6,7 +6,7 @@ import { NextResponse } from "next/server";
 export async function  POST() {
   await clearTokenOnServer();
   
-  // Revalidate all profile and protected pages to clear cache
+  // Revalidate all profiles and protected pages to clear the cache
   revalidatePath("/profile", "layout");
   revalidatePath("/dashboard", "layout");
   revalidatePath("/", "layout");

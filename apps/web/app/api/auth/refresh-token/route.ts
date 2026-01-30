@@ -1,31 +1,47 @@
-import { NextResponse } from "next/server";
-import {
-  clearTokenOnServer,
-  getRefreshTokenOnServer,
-  setTokensOnServer,
-} from "@/lib/jwt.server";
+import { NextRequest, NextResponse } from "next/server";
+import { clearTokenOnServer, setTokensOnServer } from "@/lib/jwt.server";
 
+export async function POST(req: NextRequest) {
+  const { refreshToken } = await req.json();
 
-export async function POST() {
-  const refresh = await getRefreshTokenOnServer();
-  if (!refresh) return NextResponse.json({}, { status: 401 });
+  if (!refreshToken)
+    return NextResponse.json(
+      {
+        error: "Refresh token is required",
+      },
+      { status: 401 },
+    );
 
   const res = await fetch(
     `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refresh }),
+      body: JSON.stringify({ refreshToken }),
     },
   );
+  const response = await res.json();
 
-  if (!res.ok) {
-    await clearTokenOnServer();
-    return NextResponse.json({}, { status: 401 });
+  await clearTokenOnServer();
+  if (!response?.accessToken) {
+    return NextResponse.json(
+      {
+        error: "Invalid refresh token",
+      },
+      { status: 400 },
+    );
   }
 
-  const { accessToken, refreshToken } = await res.json();
-  await setTokensOnServer({ token: accessToken, refreshToken });
+  const { accessToken, refreshToken: newRefreshToken } = response;
 
-  return NextResponse.json({ ok: true });
+  await setTokensOnServer({
+    token: accessToken,
+    refreshToken: newRefreshToken,
+  });
+
+  return NextResponse.json({
+    ok: true,
+    token: accessToken,
+    refreshToken: newRefreshToken,
+  });
 }
