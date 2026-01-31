@@ -81,21 +81,30 @@ export class Request {
     onDelete: 'SET NULL',
     nullable: true,
   })
-  @JoinColumn()
+  @JoinColumn({ name: 'requestById' })
   requestBy: User;
 
-  @Column()
+  @Column({ nullable: true })
   requestById: string;
 
   @ManyToOne(() => User, (user) => user.requestsAccepted, {
     nullable: true,
     onDelete: 'SET NULL',
   })
-  @JoinColumn()
+  @JoinColumn({ name: 'acceptedById' })
   acceptedBy: User;
 
   @Column({ nullable: true })
   acceptedById: string;
+
+  @Column({ nullable: true })
+  acceptedAt: Date;
+
+  @Column({ nullable: true })
+  completedAt: Date;
+
+  @Column({ nullable: true })
+  canceledAt: Date;
 
   @OneToMany(() => Chat, (chat) => chat.request)
   chats: Chat[];

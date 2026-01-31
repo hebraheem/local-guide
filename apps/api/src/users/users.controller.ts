@@ -155,8 +155,9 @@ export class UsersController {
   async findUserByLocation(
     @Query() query: ListRequestDto,
     @Param() location: LocationParamDto,
+    @CurrentUser('sub') userId: string,
   ): Promise<ListResponseDto<UserResponseDto>> {
-    return this.usersService.findUserByLocation(query, location);
+    return this.usersService.findUserByLocation(query, location, userId);
   }
 
   @Get('me')

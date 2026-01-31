@@ -121,4 +121,15 @@ export class User {
       ).length ?? 0
     );
   }
+
+  get averageResponseTime(): number {
+    if (!this.requestsAccepted?.length) return 0;
+
+    const total = this.requestsAccepted.reduce((sum, req) => {
+      if (!req.acceptedAt || !req.createdAt) return sum;
+      return sum + (req.acceptedAt.getTime() - req.createdAt.getTime()) / 60000;
+    }, 0);
+
+    return Number(total.toFixed(2));
+  }
 }

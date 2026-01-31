@@ -74,6 +74,7 @@ export class UsersService {
       .leftJoinAndSelect('user.profile', 'profile')
       .leftJoinAndSelect('profile.address', 'address')
       .leftJoinAndSelect('user.location', 'location')
+      .leftJoin('user.requestsAccepted', 'ra')
 
       // Count requests by status
       .addSelect(
@@ -94,6 +95,12 @@ export class UsersService {
         AND r.status != 'COMPLETED')`,
         'totalOnGoingRequests',
       )
+      .addSelect(
+        `(SELECT COALESCE(AVG(EXTRACT(EPOCH FROM (r."acceptedAt" - r."createdAt")) / 60),0) FROM requests r
+        WHERE r."acceptedAt" IS NOT NULL
+        AND r."acceptedById" = "user"."id")`,
+        'averageResponseTime',
+      )
       .where('user.id = :id', { id })
       .andWhere('"user"."deletedAt" IS NULL')
       .getRawAndEntities<User>();
@@ -108,12 +115,14 @@ export class UsersService {
       totalCompletedRequests: +raw.totalCompletedRequests,
       totalOnGoingRequests: +raw.totalOnGoingRequests,
       totalCancelledRequests: +raw.totalCancelledRequests,
+      averageResponseTime: +raw.averageResponseTime,
     });
   }
 
   async findUserByLocation(
     query: ListRequestDto,
     location: LocationParamDto,
+    userId: string,
   ): Promise<ListResponseDto<UserResponseDto>> {
     const { latitude, longitude, radiusInKm } = location;
 
@@ -157,6 +166,7 @@ export class UsersService {
         radius: radiusInKm,
       })
       .andWhere('"user"."deletedAt" IS NULL')
+      .andWhere('user.id != :userId', { userId })
       .skip(skip)
       .take(limit)
       .orderBy(column, direction, 'NULLS LAST')
@@ -182,6 +192,7 @@ export class UsersService {
         },
       )
       .andWhere('"user"."deletedAt" IS NULL')
+      .andWhere('user.id != :userId', { userId })
       .getCount();
 
     const data = users.map((user) => this.mapUserToResponse(user));
@@ -293,6 +304,7 @@ export class UsersService {
       totalCancelledRequests: user['totalCancelledRequests'] ?? 0,
       totalCompletedRequests: user['totalCompletedRequests'] ?? 0,
       totalOnGoingRequests: user['totalOnGoingRequests'] ?? 0,
+      averageResponseTime: user['averageResponseTime'],
       profile,
     };
   }

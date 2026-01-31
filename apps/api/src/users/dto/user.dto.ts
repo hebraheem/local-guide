@@ -177,6 +177,12 @@ export class UserResponseDto {
     example: 3,
   })
   totalCompletedRequests?: number;
+
+  @ApiProperty({
+    description: 'Average response time in minutes',
+    example: 5,
+  })
+  averageResponseTime?: number;
 }
 
 export class SearchAndFilterDto {
