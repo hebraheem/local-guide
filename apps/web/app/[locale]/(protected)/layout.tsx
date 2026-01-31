@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { PAGE_LINKS } from "@/constant/page.links";
 import { redirect, RedirectType } from "next/navigation";
 import { Metadata } from "next";
@@ -22,11 +22,11 @@ const PrivateLayout = async ({
   const { isAuthenticated } = await getServerAuthUser();
 
   if (!isAuthenticated) {
-  redirect(PAGE_LINKS.LOGIN, RedirectType.push);
+    redirect(PAGE_LINKS.LOGIN, RedirectType.push);
   }
 
   return (
-    <Suspense fallback="Loading...">
+    <>
       <div className="min-h-dvh bg-brand-bg text-brand-text dark:bg-brand-bg-dark dark:text-brand-text-dark">
         <main>{children}</main>
       </div>
@@ -36,7 +36,7 @@ const PrivateLayout = async ({
         showUI={true}
       />
       <BottomNav />
-    </Suspense>
+    </>
   );
 };
 
