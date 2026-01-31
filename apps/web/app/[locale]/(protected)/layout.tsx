@@ -22,7 +22,7 @@ const PrivateLayout = async ({
   const { isAuthenticated } = await getServerAuthUser();
 
   if (!isAuthenticated) {
-   redirect(PAGE_LINKS.LOGIN, RedirectType.push);
+  redirect(PAGE_LINKS.LOGIN, RedirectType.push);
   }
 
   return (
